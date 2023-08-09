@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&family=Oswald:wght@500&family=Poppins:wght@500&display=swap');
+
+body {
+    font-family: 'Montserrat', sans-serif;
+}
+
+input {
+    width: 300px;
+    height: 40px;
+}
+
+.form-title {
+    font-size: 80px;
+}
+
+.forn-name {
+    font-size: 60px;
+}
+
+.form-container {
+    width: 600px;
+    height: 400px;
+    margin: auto;
+    margin-top: 100px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    padding-left: 100px;
+    padding-right: 100x;
+}
+
+.submit-button {
+    margin-top: 20px;
+    width: 310px;
+    height: 40px;
+}
+

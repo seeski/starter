@@ -1,0 +1,72 @@
+version: "3.11"
+
+services:
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - '6379:6379'
+
+    volumes:
+      - .:/src
+
+    command: ["redis-server"]
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: Starter_Expert%060723
+      POSTGRES_USER: seeski
+      POSTGRES_DB: starterdb
+      POSTGRES_INITDB_ARGS: "-A md5"
+    ports:
+      - "5432:5432"
+
+  webapp:
+    restart: always
+    volumes:
+      - static:/static
+    build:
+      context: starter_expert
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+
+    command: 'sh -c "cd src && python manage.py migrate && python manage.py collectstatic --no-input && gunicorn starter.wsgi:application --bind 0.0.0.0:8000"'
+
+  nginx:
+    build:
+      context: starter_expert/nginx
+
+    volumes:
+      - static:/static
+    ports:
+      - "80:80"
+    depends_on:
+      - webapp
+
+
+  worker:
+    restart: always
+    build:
+      context: starter_expert
+    volumes:
+      - .:/src
+    command: ["celery", "--workdir=./src", "-A", "starter", "worker", "-l", "info"]
+
+  celery-beat:
+    restart: always
+    build:
+      context: starter_expert
+
+    volumes:
+      - .:/src
+    command: ["celery", "--workdir=./src", "-A", "starter", "beat", "-l", "info"]
+
+
+
+volumes:
+  static:

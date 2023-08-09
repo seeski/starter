@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход</title>
+      {% load static %}
+    <link rel="stylesheet" href="{% static 'account/css/login.css'%}">
+</head>
+<body>
+{% if messages %}
+    {% for message in messages %}
+        {{ message }}
+    {% endfor %}
+{% endif %}
+
+<form class="form-container" method="post" action="">
+    {% csrf_token %}
+
+  <div class="form-fields">
+    <h1 class="form-title">Вход</h1>
+    <div class="form-field">
+      <h2 class="form-name">Введите имя пользователя</h2>
+      <input type="text" placeholder="Введите имя пользователя" name="username">
+    </div>
+        <div class="form-field">
+      <h2 class="form-name">Введите пароль</h2>
+      <input type="text" placeholder="Введите пароль" name="password">
+    </div>
+    <div class="form-buttons">
+      <button class="submit-button" type="submit">Войти</button>
+    </div>
+  </div>
+</form>
+</body>
+</html>

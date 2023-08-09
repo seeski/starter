@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&family=Oswald:wght@500&family=Poppins:wght@500&display=swap');
+
+body {
+    font-family: 'Montserrat', sans-serif;
+}
+
+article {
+    margin: 50px;
+    justify-content: center;
+    padding: 20px;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+p {
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    margin: auto;
+    justify-content: center;
+ }
+
+.container-title {
+    font-size: 60px;
+}
+
+.logout {
+    font-size: 40px;
+    right: 0;
+    top: 0;
+    margin: 5px;
+    margin-top: 10px;
+    margin-left: 20px;
+}
