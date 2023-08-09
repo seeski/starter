@@ -500,7 +500,7 @@ class DataCollector:
         # получаем ответ от вб с закодированными данными по миллиону топ запросов
         # декодируем текст в человеческий
         async with AsyncClient() as client:
-            resp = await client.get('https://trending-searches.wb.ru/file?period=month')
+            resp = await client.get('https://trending-searches.wb.ru/file?period=month', timeout=None)
             resp = resp.json()
             enc_data = resp['data']['file']
             data = base64.b64decode(enc_data).decode('utf-8')
