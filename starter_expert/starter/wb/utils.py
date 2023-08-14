@@ -5,8 +5,7 @@ from . import models
 from pathlib import Path
 from datetime import datetime, timedelta
 from httpx import AsyncClient
-
-BASE_DIR = Path(__file__).resolve().parent.parent
+from asgiref.sync import async_to_sync
 
 
 
@@ -23,11 +22,13 @@ def normalize_text(text: str) -> str:
 
 
 # записывает все данные по каждому отчету в IndexerReportData
-async def createReportData(report):
-    nmid = report.nmid
+def createReportData(report_id, nmid):
+    report = models.IndexerReport.objects.get(id=report_id)
+    requests_data = list(models.Request.objects.all())
 
     indexer = Indexer(nmid)
-    async for query in await indexer.iterate_resulted_queries():
+    async_to_sync(indexer.search_common)(requests_data)
+    for query in indexer.iterate_resulted_queries():
         models.IndexerReportData.objects.create(
             priority_cat=query.get('top_category'),
             keywords=query.get('keywords'),
@@ -37,19 +38,17 @@ async def createReportData(report):
             place=query.get('place'),
             spot_req_depth=query.get('spot_req_depth'),
             ad_place=query.get('ad_place'),
-            report=report
+            report=report,
+            product_id=nmid
         )
 
     report.ready = True
     report.save()
 
 
-
 # класс для работы с файлами
 # открытие, чтение, запись, вся хуйня
 class FileOperator:
-
-    requests_file_path = os.path.join(BASE_DIR, 'requests.json')
 
     # для работы с csv файлами используется встроенная библиотека csv
     # для работы с excel файлами требуется установка openpyexcel
@@ -358,7 +357,7 @@ class DataCollector:
     # возвращает топ категорию из апи ответа по рекламе
     async def get_top_category(self, ad_info_url: str):
 
-        async with AsyncClient as client:
+        async with AsyncClient() as client:
             try:
                 resp = await client.get(ad_info_url)
                 resp = resp.json()
@@ -375,7 +374,8 @@ class DataCollector:
     # возвращает все категории, которые есть на вб
     async def get_subject_base(self, subject_base_url: str):
         categories = {}
-        async with AsyncClient as client:
+        async with AsyncClient() as client:
+            print('aboba')
             try:
                  resp = await client.get(subject_base_url)
                  resp = resp.json()
@@ -425,6 +425,7 @@ class DataCollector:
                 product = resp.get('data').get('products')[0]
                 name = product.get('name')
                 brand = product.get('brand')
+                print(name, brand)
                 return ' '.join([name, brand])
 
             except Exception as e:
@@ -504,7 +505,7 @@ class DataCollector:
             resp = resp.json()
             enc_data = resp['data']['file']
             data = base64.b64decode(enc_data).decode('utf-8')
-            queriesAsStrs = data.split('\n')
+            queriesAsStrs = data.split('\n')[:10000]
 
             # проходимся по каждой строчке, предварительно сплитили по переносу
             # роспаковываем на запрос и частоту
@@ -544,8 +545,9 @@ class DataOperator:
 
     def check_desc(self, query: dict):
 
-        normalized_keywords = set(query.get('normalized_keywords').split(' '))
-        keywords_lenght = len(query.get('keywords'))
+        normalized_keywords = set(query.normalized_keywords.split(' '))
+        keywords_lenght = len(query.keywords)
+
 
         if normalized_keywords.issubset(set(self.desc)) and keywords_lenght >= 3:
             return True
@@ -569,9 +571,7 @@ class DataOperator:
 
 
     def check_top_category(self, category_id, subject_base):
-        if category_id in subject_base:
-            return subject_base['category_id']
-        return None
+            return subject_base.get('category_id')
 
 
     def load_and_normalize_request(self, request_data: dict):
@@ -584,15 +584,15 @@ class DataOperator:
 
 class Indexer:
 
+    url_operator = URLOperator()
+    data_collector = DataCollector()
+
+
     def __init__(self, nmid):
         self.nmid = nmid
-        self.url_operator = URLOperator()
-        self.data_collector = DataCollector()
-        # await self.__search_common()
 
-    async def __search_common(self):
-        file = open(os.path.join(BASE_DIR, 'requests.json'), encoding='utf-8')
-        requests_data = json.load(file)
+    async def search_common(self, requests_data):
+
 
         card_url = self.url_operator.create_card_url(self.nmid)
         detail_card_url = self.url_operator.create_nmid_detail_url(self.nmid)
@@ -603,6 +603,7 @@ class Indexer:
 
         self.data_operator = DataOperator(self.nmid, full_info)
         self.resulted_queries = filter(self.data_operator.check_desc, requests_data)
+        print('no error')
 
     async def __get_brand_id(self):
         detail_url = self.url_operator.create_nmid_detail_url(self.nmid)
@@ -653,19 +654,20 @@ class Indexer:
             return most_category
 
 
-    async def iterate_resulted_queries(self):
+    def iterate_resulted_queries(self):
         for query in self.resulted_queries:
-            keywords = query.get('keywords')
-            frequency = query.get('frequency')
-            top_category = await self.__get_top_category(keywords)
-            req_depth = await self.__get_req_depth(keywords)
-            existence = await self.__get_existence(keywords)
+            print(query)
+            keywords = query.keywords
+            frequency = query.frequency
+            top_category =  async_to_sync(self.__get_top_category)(keywords)
+            req_depth =  async_to_sync(self.__get_req_depth)(keywords)
+            existence =  async_to_sync(self.__get_existence)(keywords)
 
             if existence:
-                ad_info = self.__get_ad_info(keywords)
+                ad_info = async_to_sync(self.__get_ad_info)(keywords)
                 ad_spots = ad_info.get('ad_spots')
                 ad_place = ad_info.get('ad_place')
-                place = await self.__get_place(keywords)
+                place =  async_to_sync(self.__get_place)(keywords)
 
                 if place and req_depth != 0:
                     percent = (place / req_depth) * 100

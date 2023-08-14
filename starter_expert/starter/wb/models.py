@@ -8,8 +8,10 @@ class NmidToBeReported(models.Model):
     nmid = models.IntegerField(null=False, unique=True)
     name = models.CharField(max_length=255)
     url = models.URLField()
+    seo_collector_keywords = models.ForeignKey('Seo_collector_report', null=True, blank=True, on_delete=models.SET_NULL)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     class Meta:
+        verbose_name = "Товар"
         verbose_name_plural = "Товары"
 
 
@@ -27,6 +29,7 @@ class IndexerReport(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     class Meta:
         verbose_name_plural = "Индексатор, Отчеты"
+        verbose_name = 'Отчет по индексатору'
 
 
 #  хранит собранные данные по каждому отчету
@@ -43,7 +46,7 @@ class IndexerReport(models.Model):
 # report_id - внешний ключ связывающий отчет с записью в
 class IndexerReportData(models.Model):
 
-    priority_cat = models.CharField(max_length=255)
+    priority_cat = models.CharField(max_length=255, blank=True, null=True)
     keywords = models.CharField(max_length=255)
     frequency = models.IntegerField()
     req_depth = models.IntegerField()
@@ -53,9 +56,11 @@ class IndexerReportData(models.Model):
     ad_spots = models.IntegerField(null=True, default=None)
     ad_place = models.IntegerField(null=True, default=None)
     report = models.ForeignKey(IndexerReport, null=False, on_delete=models.CASCADE)
+    product_id = models.IntegerField()
 
     class Meta:
         verbose_name_plural = 'Данные по отчетам'
+        verbose_name = 'Данные по отчету'
 
 
 class Request(models.Model):
@@ -63,7 +68,13 @@ class Request(models.Model):
     keywords = models.CharField(max_length=255)
     normalized_keywords = models.CharField(max_length=255)
     frequency = models.IntegerField()
+    date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name_plural = 'Топ запросы'
         verbose_name = 'Топ запрос'
+
+
+class Seo_collector_report(models.Model):
+
+    name = models.CharField(max_length=255)

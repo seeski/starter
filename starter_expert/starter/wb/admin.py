@@ -1,6 +1,8 @@
 from django.contrib import admin
-from . import models
-
+from .models import *
 # Register your models here.
 
-admin.site.register(models.Request)
+admin.site.register(Request)
+admin.site.register(NmidToBeReported)
+admin.site.register(IndexerReport)
+admin.site.register(IndexerReportData)

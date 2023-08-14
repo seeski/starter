@@ -3,7 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <title>Индексация</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'wb/css/indexer.css' %}">
 </head>
 <body>
+<div class="topic">
+    <div class="nav-wrap">
+        <p><a href="{% url 'logout' %}">Выйти</a></p>
+        <p><a href="{% url 'staff_home' %}">Кабинет</a></p>
+    </div>
+<form method="post" enctype="multipart/form-data" action="{% url 'indexer' %}" class="nmid-form">
+    {% csrf_token %}
+    <h3 class="form-title">Добавить NMID'и</h3>
+	<label class="input-file">
+	   	<input type="file" name="file">
+ 	   	<span class="input-file-btn">Выберите файл</span>
+        <input type="submit" value="загрузить" class="submit-btn">
+ 	</label>
+</form>
+</div>
+<h1 class="table-title">NMID'и</h1>
+<table>
+    <thead>
+    <tr>
+        <th scope="col">NMID</th>
+        <th scope="col">Название</th>
+        <th scope="col">Ссылка</th>
+        <th scope="col">Запрос</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for data in nmids %}
+    <tr>
+        <td><a href="" class="table-link">{{ data.nmid }}</a></td>
+        <td>{{ data.name  }}</td>
+        <td><a href="{{ data.url }}" class="table-link">Подробнее</a></td>
+        {% if data.seo_collector_keywords %}
+        <td>{{ data.seo_collector_keywords }}</td>
+        {% else %}
+        <td>Нет</td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 </body>
 </html>

@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&family=Oswald:wght@500&family=Poppins:wght@500&display=swap');
+
+body {
+    font-family: 'Montserrat', sans-serif;
+}
+
+
+table {
+    width: 1000px;
+    color: rgb(0,0,0);
+    border-collapse: collapse;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+thead {
+    color: rgb(255,255,255);
+    background-color: rgb(22,40,122);
+    height: 55px;
+    font-size: 30px;
+}
+.table-link {
+    font-size: 15px;
+    color: rgb(0,0,0);
+    text-decoration: none;
+    font-weight: normal;
+}
+
+.table-link:hover {
+    color: rgb(100,100,100);
+}
+
+.table-title {
+    font-size: 50px;
+    text-align: left;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-left: 10px;
+    margin-top: 50px;
+}
+
+tr:nth-child(even) {
+  background-color: rgb(215,215,215);
+}
+
+td {
+    font-size: 15px;
+    padding-left: 10px;
+    height: 20px;
+    color: rgb(0,0,0);
+}
+
+a {
+    text-decoration: none;
+    color: rgb(25,22,187);
+    font-size: 30px;
+}
+a:hover {
+    color: rgb(13,38,230);
+}
+p {
+    margin: 15px;
+    margin-top: 0px;
+    background-color: rgb(255,255,255);
+    border-color: ;
+    border-radius: 4px;
+    border-width: 1px;
+}
+.submit-btn {
+    color: rgb(25,22,187);
+    background-color: rgb(255,255,255);
+    border-color: rgb(13,38,230);
+    border-radius: 4px;
+    border-style: solid;
+    border-width: 2px;
+    width: 100px;
+    height: 40px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.submit-btn:hover {
+    color: rgb(255,255,255);
+    background-color: rgb(13,38,230);
+    border-color: rgb(13,38,230);
+}
+
+.form-title {
+    margin-top: 0px;
+    letter-spacing: 1px;
+    font-size: 20px;
+
+}
+
+.table-link {
+    color:
+}
+
+.form-title, a {
+    font-weight: bold;
+}
+.nmid-form, .nav-wrap {
+    float: right;
+}
+.nmid-form {
+    margin-right: 40px;
+    margin-bottom: 40px;
+}
+.input-file {
+	position: relative;
+	display: inline-block;
+}
+.input-file-btn {
+	position: relative;
+	display: inline-block;
+	cursor: pointer;
+	outline: none;
+	text-decoration: none;
+	font-size: 14px;
+	vertical-align: middle;
+	color: rgb(255 255 255);
+	text-align: center;
+	border-radius: 4px;
+	background-color: rgb(25,22,187);
+	line-height: 22px;
+	height: 40px;
+	padding: 10px 20px;
+	box-sizing: border-box;
+	border: none;
+	margin: 0;
+	transition: background-color 0.2s;
+}
+.input-file-text {
+	padding: 0 10px;
+	line-height: 40px;
+	display: inline-block;
+}
+.input-file input[type=file] {
+	position: absolute;
+	z-index: -1;
+	opacity: 0;
+	display: block;
+	width: 0;
+	height: 0;
+}
+ 
+/* Focus */
+.input-file input[type=file]:focus + .input-file-btn {
+	box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+ 
+/* Hover/active */
+.input-file-btn:hover {
+	background-color: rgb(13,38,230);
+}
+.input-file:active .input-file-btn {
+	background-color: #2E703A;
+}
+ 
+/* Disabled */
+.input-file input[type=file]:disabled + .input-file-btn {
+	background-color: #eee;
+}
