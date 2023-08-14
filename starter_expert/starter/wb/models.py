@@ -8,7 +8,7 @@ class NmidToBeReported(models.Model):
     nmid = models.IntegerField(null=False, unique=True)
     name = models.CharField(max_length=255)
     url = models.URLField()
-    seo_collector_keywords_id = models.ForeignKey('Seo_collector_report', null=True, blank=True, on_delete=models.SET_NULL)
+    # seo_collector_keywords_id = models.ForeignKey('Seo_collector_report', null=True, blank=True, on_delete=models.SET_NULL)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     class Meta:
         verbose_name = "Товар"
@@ -75,6 +75,6 @@ class Request(models.Model):
         verbose_name = 'Топ запрос'
 
 
-class Seo_collector_report(models.Model):
-
-    name = models.CharField(max_length=255)
+# class Seo_collector_report(models.Model):
+#
+#     name = models.CharField(max_length=255)
