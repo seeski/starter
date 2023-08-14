@@ -237,7 +237,7 @@ class DataCollector:
     # линку предварительно сгенерировал юрл оператор в вызове методе create_card_url
     async def get_card_info(self, card_url):
         async with AsyncClient() as client:
-            resp = await client.get(card_url)
+            resp = await client.get(card_url, timeout=None)
             resp = resp.json()
             info = ''
             try:
@@ -263,7 +263,7 @@ class DataCollector:
 
         async with AsyncClient() as client:
             try:
-                resp = await client.get(detail_url)
+                resp = await client.get(detail_url, timeout=None)
                 resp = resp.json()
                 return resp.get('data').get('products')[0].get('brandId')
             except Exception as e:
@@ -274,7 +274,7 @@ class DataCollector:
     async def get_req_depth(self, query_depth_url):
         async with AsyncClient() as client:
             try:
-                resp = await client.get(query_depth_url)
+                resp = await client.get(query_depth_url, timeout=None)
                 resp = resp.json()
                 return resp.get('data').get('total')
             except Exception as e:
@@ -293,7 +293,7 @@ class DataCollector:
             while True:
                 query_by_brand_url = query_by_brand_url.replace(f'page={counter - 1}', f'page={counter}')
                 try:
-                    resp = await client.get(query_by_brand_url)
+                    resp = await client.get(query_by_brand_url, timeout=None)
                     resp = resp.json()
                     products = resp.get('data').get('products')
 
@@ -319,7 +319,7 @@ class DataCollector:
         async with AsyncClient() as client:
             while counter <= 10:
                 try:
-                    resp = await client.get(query_url)
+                    resp = await client.get(query_url, timeout=None)
                     resp = resp.json()
                     products = resp.get('data').get('products')
                     if not products:
@@ -341,7 +341,7 @@ class DataCollector:
         ad_ids = []
         async with AsyncClient() as client:
             try:
-                resp = await client.get(ad_url)
+                resp = await client.get(ad_url, timeout=None)
                 resp = resp.json()
                 adverts = resp.get('adverts')
                 if adverts:
@@ -359,7 +359,7 @@ class DataCollector:
 
         async with AsyncClient() as client:
             try:
-                resp = await client.get(ad_info_url)
+                resp = await client.get(ad_info_url, timeout=None)
                 resp = resp.json()
                 priroty_cats = resp.get('prioritySubjects')
                 if priroty_cats:
@@ -377,7 +377,7 @@ class DataCollector:
         async with AsyncClient() as client:
             print('aboba')
             try:
-                 resp = await client.get(subject_base_url)
+                 resp = await client.get(subject_base_url, timeout=None)
                  resp = resp.json()
                  for parent_category in resp:
                      for child_category in parent_category['childs']:
@@ -400,7 +400,7 @@ class DataCollector:
         count = 0
         async with AsyncClient() as client:
             try:
-                resp = await client.get(query_categories_url)
+                resp = await client.get(query_categories_url, timeout=None)
                 resp = resp.json()
                 for key in resp.get('data').get('filters'):
                     for item in key.get('items'):
@@ -420,7 +420,7 @@ class DataCollector:
     async def get_brand_and_name(self, detail_url):
         async with AsyncClient() as client:
             try:
-                resp = await client.get(detail_url)
+                resp = await client.get(detail_url, timeout=None)
                 resp = resp.json()
                 product = resp.get('data').get('products')[0]
                 name = product.get('name')
@@ -447,7 +447,7 @@ class DataCollector:
         headers = {'Authorization': f'Bearer {token}'}
 
         async with AsyncClient() as client:
-            resp = await client.get(supplies_api_url, headers=headers)
+            resp = await client.get(supplies_api_url, timeout=None, headers=headers)
             resp = resp.json()
             supplies_from_resp = resp.get('supplies')
             next = resp.get('next')
