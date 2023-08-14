@@ -24,7 +24,7 @@ app.conf.beat_schedule = {
 
     'indexer-daily-report': {
         'task': 'wb.tasks.create_indexer_reports_task',
-        'schedule': crontab(hour=13, minute=52)
+        'schedule': crontab(hour=16, minute=50)
     }
 }
 
