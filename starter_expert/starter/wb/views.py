@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from . import utils
 from . import tasks
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, View
 from .models import NmidToBeReported, IndexerReport, IndexerReportData
 from .forms import Upload_nmids_form
 
@@ -27,10 +27,11 @@ class IndexerView(ListView):
         return render(request, self.template_name)
 
 
-# class IndexerNmidView(DetailView):
+
+# class IndexerNmidView(ListView):
 #     template_name = 'wb/indexer_reports.html'
 #     paginate_by = 100
 #     model = IndexerReportData
 #     context_object_name = 'nmid_reports'
 #
-#     def get_queryset(self):
+#     def get_context_data(self, *, object_list=None, **kwargs):
