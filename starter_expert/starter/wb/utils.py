@@ -429,7 +429,7 @@ class DataCollector:
                 return ' '.join([name, brand])
 
             except Exception as e:
-                print(f'error at {detail_url} {e}')
+                print(f'error at {detail_url}, {type(e).__name__} :: {e}')
 
 
 
