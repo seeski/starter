@@ -375,7 +375,6 @@ class DataCollector:
     async def get_subject_base(self, subject_base_url: str):
         categories = {}
         async with AsyncClient() as client:
-            print('aboba')
             try:
                  resp = await client.get(subject_base_url, timeout=None)
                  resp = resp.json()
@@ -425,7 +424,6 @@ class DataCollector:
                 product = resp.get('data').get('products')[0]
                 name = product.get('name')
                 brand = product.get('brand')
-                print(name, brand)
                 return ' '.join([name, brand])
 
             except Exception as e:
@@ -505,7 +503,7 @@ class DataCollector:
             resp = resp.json()
             enc_data = resp['data']['file']
             data = base64.b64decode(enc_data).decode('utf-8')
-            queriesAsStrs = data.split('\n')[:10000]
+            queriesAsStrs = data.split('\n')
 
             # проходимся по каждой строчке, предварительно сплитили по переносу
             # роспаковываем на запрос и частоту
@@ -603,7 +601,6 @@ class Indexer:
 
         self.data_operator = DataOperator(self.nmid, full_info)
         self.resulted_queries = filter(self.data_operator.check_desc, requests_data)
-        print('no error')
 
     async def __get_brand_id(self):
         detail_url = self.url_operator.create_nmid_detail_url(self.nmid)
@@ -656,7 +653,6 @@ class Indexer:
 
     def iterate_resulted_queries(self):
         for query in self.resulted_queries:
-            print(query)
             keywords = query.keywords
             frequency = query.frequency
             top_category =  async_to_sync(self.__get_top_category)(keywords)
