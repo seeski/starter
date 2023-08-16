@@ -45,11 +45,37 @@ def createReportData(report_id, nmid):
     report.ready = True
     report.save()
 
+class NmidContextOperator:
+
+    def __init__(self, requests: dict, reports):
+        self.requests = requests
+        self.reports = reports
+        self.__create_context()
+        for request in self.requests:
+            print(self.requests[request])
+
+
+    def __iterate_report_data(self, report_data):
+
+        for request in self.requests:
+            if request in report_data:
+                row_data = report_data[request]
+                self.requests[request].append({'place': row_data.place, 'req_depth': row_data.req_depth})
+            else:
+                self.requests[request].append({'place': None, 'req_depth': None})
+    def __create_context(self):
+        for report in self.reports:
+            report_data_queryset = models.IndexerReportData.objects.all().filter(report=report)
+            report_data = dict(zip(
+                [data.keywords for data in report_data_queryset],
+                list(report_data_queryset)
+            ))
+            self.__iterate_report_data(report_data)
+
 
 # класс для работы с файлами
 # открытие, чтение, запись, вся хуйня
 class FileOperator:
-
     # для работы с csv файлами используется встроенная библиотека csv
     # для работы с excel файлами требуется установка openpyexcel
 
@@ -503,7 +529,7 @@ class DataCollector:
             resp = resp.json()
             enc_data = resp['data']['file']
             data = base64.b64decode(enc_data).decode('utf-8')
-            queriesAsStrs = data.split('\n')
+            queriesAsStrs = data.split('\n')[:10000]
 
             # проходимся по каждой строчке, предварительно сплитили по переносу
             # роспаковываем на запрос и частоту
@@ -665,12 +691,13 @@ class Indexer:
                 ad_place = ad_info.get('ad_place')
                 place =  async_to_sync(self.__get_place)(keywords)
 
-                if place and req_depth != 0:
+                if req_depth != 0:
+                    if not place:
+                        place = req_depth + 1
                     percent = (place / req_depth) * 100
                     spot_req_depth = str(round(percent, 2)).replace('.', ';')
 
-                else:
-                    spot_req_depth = place
+
 
 
             else:

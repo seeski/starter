@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Подробный отчет</title>
+    {% load wb_indexer %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'wb/css/indexer_detail.css' %}">
+</head>
+<body>
+<div class="tbl-wrap">
+<table border="1">
+    <thead>
+        <tr class="columns">
+            <th rowspan="2" colspan="1" scope="col" class="headcol">Запрос</th>
+            {% for report in reports %}
+            <th colspan="2" rowspan="1" scope="col" class="long">{{ report.date|date:'d.m' }}</th>
+            {% endfor %}
+        </tr>
+        <tr class="columns">
+            {% for report in reports %}
+            <th rowspan="1" colspan="1" class="long">Место</th>
+            <th rowspan="1" colspan="1" class="long">Выдача</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+    {% for request in requests %}
+    <tr class="tbl-row">
+        <th class="headcol">{{ request }}</th>
+        {% for report_info in requests|get_dict_value:request %}
+        {% if report_info.place and report_info.place > report_info.req_depth %}
+            <td></td>
+        {% elif report_info.place %}
+        <td>{{ report_info.place }}</td>
+        {% else %}
+        <td>+</td>
+        {% endif %}
+        {% if report_info.req_depth %}
+        <td>{{ report_info.req_depth }}</td>
+        {% else %}
+        <td></td>
+        {% endif %}
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+</body>
+</html>

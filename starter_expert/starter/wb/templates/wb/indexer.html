@@ -35,7 +35,7 @@
     <tbody>
     {% for data in nmids %}
     <tr>
-        <td><a href="" class="table-link">{{ data.nmid }}</a></td>
+        <td><a href="{% url 'product_reports_data' nmid=data.nmid %}" class="table-link">{{ data.nmid }}</a></td>
         <td>{{ data.name  }}</td>
         <td><a href="{{ data.url }}" class="table-link">Подробнее</a></td>
         {% if data.seo_collector_keywords %}

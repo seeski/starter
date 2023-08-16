@@ -4,6 +4,7 @@ from . import tasks
 from django.views.generic import ListView, View
 from .models import NmidToBeReported, IndexerReport, IndexerReportData
 from .forms import Upload_nmids_form
+from django.db.models import Avg, Q
 
 # Create your views here.
 
@@ -28,10 +29,15 @@ class IndexerView(ListView):
 
 
 
-# class IndexerNmidView(ListView):
-#     template_name = 'wb/indexer_reports.html'
-#     paginate_by = 100
-#     model = IndexerReportData
-#     context_object_name = 'nmid_reports'
-#
-#     def get_context_data(self, *, object_list=None, **kwargs):
+def nmid_view(request, nmid):
+    context = {}
+    requests_list = list(data['keywords'] for data in IndexerReportData.objects.all().filter(product_id=nmid).values('keywords').distinct())
+    requests = dict([(i,[]) for i in requests_list])
+    reports = IndexerReport.objects.all().filter(nmid=nmid)
+    context_operator = utils.NmidContextOperator(requests, reports)
+    context['reports'] = reports
+    # for request in context_operator.requests:
+    #     print(f'{context_operator.requests[request]}\n\n\n\n')
+    context['requests'] = context_operator.requests
+
+    return render(request, 'wb/nmid.html', context)
