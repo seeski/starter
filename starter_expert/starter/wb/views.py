@@ -2,9 +2,11 @@ from django.shortcuts import render
 from . import utils
 from . import tasks
 from django.views.generic import ListView, View
-from .models import NmidToBeReported, IndexerReport, IndexerReportData
+from .models import NmidToBeReported, IndexerReport, IndexerReportData, Cabinet
 from .forms import Upload_nmids_form
+from asgiref.sync import async_to_sync
 from django.db.models import Avg, Q
+import asyncio
 
 # Create your views here.
 
@@ -36,8 +38,15 @@ def nmid_view(request, nmid):
     reports = IndexerReport.objects.all().filter(nmid=nmid)
     context_operator = utils.NmidContextOperator(requests, reports)
     context['reports'] = reports
-    # for request in context_operator.requests:
-    #     print(f'{context_operator.requests[request]}\n\n\n\n')
     context['requests'] = context_operator.requests
-
     return render(request, 'wb/nmid.html', context)
+
+def supplies(request):
+    data_collector = utils.DataCollector()
+    context = {}
+    context['cabinets'] = {}
+    cabinets = Cabinet.objects.all()
+    for cabinet in cabinets:
+        supplies = asyncio.run(data_collector.get_supplies(cabinet.token, cabinet.name))
+        context['cabinets'][cabinet.name] = supplies
+    return render(request, 'wb/supplies.html', context=context)

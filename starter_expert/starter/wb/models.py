@@ -74,7 +74,11 @@ class Request(models.Model):
         verbose_name_plural = 'Топ запросы'
         verbose_name = 'Топ запрос'
 
+class Cabinet(models.Model):
 
-# class Seo_collector_report(models.Model):
-#
-#     name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    token = models.TextField()
+
+    class Meta:
+        verbose_name = 'Кабинет'
+        verbose_name_plural = 'Кабинеты'

@@ -29,16 +29,17 @@
     <tr class="tbl-row">
         <th class="headcol">{{ request }}</th>
         {% for report_info in requests|get_dict_value:request %}
-        {% if report_info.place and report_info.place > report_info.req_depth %}
+        {% if report_info.req_depth %}
+        {% if not report_info.place %}
             <td></td>
-        {% elif report_info.place %}
+        {% elif report_info.place  and report_info.place != 1001 %}
         <td>{{ report_info.place }}</td>
         {% else %}
         <td>+</td>
         {% endif %}
-        {% if report_info.req_depth %}
         <td>{{ report_info.req_depth }}</td>
         {% else %}
+        <td></td>
         <td></td>
         {% endif %}
         {% endfor %}

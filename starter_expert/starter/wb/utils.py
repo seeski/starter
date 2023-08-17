@@ -246,6 +246,8 @@ class URLOperator:
     # создает ссылку для получения инфы от апи по категориям по определенному запросу в выдаче
     # вызывается в том случае, если топ категория по определенному запросу не была получена
     def create_query_categories_url(self, query):
+        # print(f'{query} query text')
+        # print(f"{self.query_categories_url_template.format(query.strip().replace(' ', '%20'))} url text")
         return self.query_categories_url_template.format(
             query.strip().replace(' ', '%20')
         )
@@ -293,7 +295,7 @@ class DataCollector:
                 resp = resp.json()
                 return resp.get('data').get('products')[0].get('brandId')
             except Exception as e:
-                print(f'error at {detail_url} {e}')
+                print(f'error at get_brand_id {detail_url} {e}')
 
 
     # получение глубины запроса
@@ -304,7 +306,7 @@ class DataCollector:
                 resp = resp.json()
                 return resp.get('data').get('total')
             except Exception as e:
-                print(f'error at {query_depth_url} {e}')
+                print(f'error at get_req_depth {query_depth_url} {e}')
                 return 0
 
     # получение id товаров по определенному брэнду
@@ -332,7 +334,7 @@ class DataCollector:
                         counter += 1
 
                 except Exception as e:
-                    print(f'error at {query_by_brand_url} {e}')
+                    print(f'error at get_query_by_brand {query_by_brand_url} {e}')
                     return set()
 
 
@@ -358,7 +360,7 @@ class DataCollector:
 
                 except Exception as e:
                     time.sleep(20)
-                    print(f'error at {query_url} {e}')
+                    print(f'error at get_query {query_url} {e}')
 
             return ids
 
@@ -377,7 +379,7 @@ class DataCollector:
                 return ad_ids
 
             except Exception as e:
-                print(f'error at {ad_url} {e}')
+                print(f'error at get_ad {ad_url} {e}')
                 return []
 
     # возвращает топ категорию из апи ответа по рекламе
@@ -394,7 +396,7 @@ class DataCollector:
                 return ''
 
             except Exception as e:
-                print(f'error at {ad_info_url} {e}')
+                print(f'error at get_top_category {ad_info_url} {e}')
                 return ''
 
     # возвращает все категории, которые есть на вб
@@ -414,7 +416,7 @@ class DataCollector:
                  return categories
 
             except Exception as e:
-                print(f'error at {subject_base_url} {e}')
+                print(f'error at get_subject_base {subject_base_url} {e}')
                 return {}
 
 
@@ -436,7 +438,7 @@ class DataCollector:
                 return category
 
             except Exception as e:
-                print(f'error at {query_categories_url} {e}')
+                print(f'error at  get_query_most_category {query_categories_url} {e}')
 
 
 
@@ -453,7 +455,7 @@ class DataCollector:
                 return ' '.join([name, brand])
 
             except Exception as e:
-                print(f'error at {detail_url}, {type(e).__name__} :: {e}')
+                print(f'error at get_brand_and_name {detail_url}, {type(e).__name__} :: {e}')
 
 
 
@@ -515,10 +517,10 @@ class DataCollector:
                             stop_flag = True
 
                 if len(supplies_from_resp) == 1000:
-                    return delivery_info + self.get_supplies(token, cabinet, next)
+                    return delivery_info + await self.get_supplies(token, cabinet, next)
                 return delivery_info
 
-            return self.get_supplies(token, cabinet, next)
+            return await self.get_supplies(token, cabinet, next)
 
     async def getRequestsData(self):
 
@@ -591,7 +593,7 @@ class DataOperator:
     def check_first_ten_pages(self, ids):
         if self.nmid in ids:
             return ids.index(self.nmid) + 1
-        return 0
+        return 1001
 
 
     def check_top_category(self, category_id, subject_base):
@@ -673,7 +675,8 @@ class Indexer:
             return top_category
         else:
             query_category_url = self.url_operator.create_query_categories_url(query)
-            most_category = await self.data_collector.get_query_most_category(query)
+
+            most_category = await self.data_collector.get_query_most_category(query_category_url)
             return most_category
 
 
@@ -696,10 +699,6 @@ class Indexer:
                         place = req_depth + 1
                     percent = (place / req_depth) * 100
                     spot_req_depth = str(round(percent, 2)).replace('.', ';')
-
-
-
-
             else:
                 ad_spots, ad_place, place, spot_req_depth = [None] * 4
 

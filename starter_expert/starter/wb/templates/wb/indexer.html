@@ -12,7 +12,7 @@
         <p><a href="{% url 'logout' %}">Выйти</a></p>
         <p><a href="{% url 'staff_home' %}">Кабинет</a></p>
     </div>
-<form method="post" enctype="multipart/form-data" action="{% url 'indexer' %}" class="nmid-form">
+<form method="post" enctype="multipart/form-data" action="{% url 'wb_indexer' %}" class="nmid-form">
     {% csrf_token %}
     <h3 class="form-title">Добавить NMID'и</h3>
 	<label class="input-file">
@@ -35,7 +35,7 @@
     <tbody>
     {% for data in nmids %}
     <tr>
-        <td><a href="{% url 'product_reports_data' nmid=data.nmid %}" class="table-link">{{ data.nmid }}</a></td>
+        <td><a href="{% url 'wb_product_reports_data' nmid=data.nmid %}" class="table-link">{{ data.nmid }}</a></td>
         <td>{{ data.name  }}</td>
         <td><a href="{{ data.url }}" class="table-link">Подробнее</a></td>
         {% if data.seo_collector_keywords %}
