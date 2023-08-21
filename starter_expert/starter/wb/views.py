@@ -41,11 +41,12 @@ def nmid_view(request, nmid):
     context['requests'] = context_operator.requests
     return render(request, 'wb/nmid.html', context)
 
-def supplies(request):
+
+def supplies(request, cabinet):
     data_collector = utils.DataCollector()
     context = {}
     context['cabinets'] = {}
-    cabinets = Cabinet.objects.all()
+    cabinets = Cabinet.objects.all().filter(id=cabinet)
     for cabinet in cabinets:
         supplies = asyncio.run(data_collector.get_supplies(cabinet.token, cabinet.name))
         context['cabinets'][cabinet.name] = supplies
