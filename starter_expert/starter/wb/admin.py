@@ -6,10 +6,10 @@ class RequestAdmin(admin.ModelAdmin):
     list_display = ('keywords', 'frequency', 'normalized_keywords')
 
 class NmidAdmin(admin.ModelAdmin):
-    list_display = ('nmid', 'name', 'url', 'user')
+    list_display = ('nmid', 'name', 'url', 'phrase')
 
 class IndexerReportAdmin(admin.ModelAdmin):
-    list_display = ('nmid', 'date', 'ready', 'user')
+    list_display = ('nmid', 'date', 'ready')
 
 class IndexerReportDataAdmin(admin.ModelAdmin):
     list_display = ('keywords', 'priority_cat', 'frequency', 'req_depth', 'existence', 'place',
@@ -18,8 +18,16 @@ class IndexerReportDataAdmin(admin.ModelAdmin):
 class CabinetAdmin(admin.ModelAdmin):
     list_display = ('name', 'token')
 
+class SeoPhrasesAdmin(admin.ModelAdmin):
+    list_display = ('phrase', 'priority_cat', 'req_depth')
+
+class SeoPhraseDataAdmin(admin.ModelAdmin):
+    list_display = ('query', 'priority_cat', 'standard', 'phrase')
+
 admin.site.register(Request, RequestAdmin)
 admin.site.register(NmidToBeReported, NmidAdmin)
 admin.site.register(IndexerReport, IndexerReportAdmin)
 admin.site.register(IndexerReportData, IndexerReportDataAdmin)
 admin.site.register(Cabinet, CabinetAdmin)
+admin.site.register(SeoCollectorPhrase, SeoPhrasesAdmin)
+admin.site.register(SeoCollectorPhraseData, SeoPhraseDataAdmin)

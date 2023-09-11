@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Сео</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'wb/css/indexer.css' %}">
+</head>
+<body>
+<div class="topic">
+    <div class="nav-wrap">
+        <p><a href="{% url 'logout' %}">Выйти</a></p>
+        <p><a href="{% url 'staff_home' %}">Кабинет</a></p>
+    </div>
+<form method="post" enctype="multipart/form-data" action="{% url 'wb_seo_phrases' %}" class="nmid-form">
+    {% csrf_token %}
+    <h3 class="form-title">Добавить фразы</h3>
+	<label class="input-file">
+	   	<input type="file" name="file">
+ 	   	<span class="input-file-btn">Выберите файл</span>
+        <input type="submit" value="загрузить" class="submit-btn">
+ 	</label>
+</form>
+</div>
+<table>
+<thead>
+<tr>
+    <th scope="col">Запрос</th>
+    <th scope="col">Категория</th>
+    <th scope="col">Выдача</th>
+    <th scope="col">Статус</th>
+</tr>
+</thead>
+<tbody>
+{% for phrase_obj in phrases %}
+<tr>
+    <td><a href="{% url 'wb_seo_phrases_detail' phrase=phrase_obj.id %}">{{ phrase_obj.phrase }}</a></td>
+    <td>{{ phrase_obj.priority_cat }}</td>
+    <td>{{ phrase_obj.req_depth }}</td>
+    {% if phrase_obj.ready %}
+    <td class="ready-flag pos">&#9679;</td>
+    {% else %}
+    <td class="reaneg">&#9679;</td>
+    {% endif %}</tr>
+{% endfor %}
+</tbody>
+</table>
+</body>
+</html>

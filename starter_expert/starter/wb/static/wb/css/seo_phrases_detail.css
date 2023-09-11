@@ -1,15 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&family=Oswald:wght@500&family=Poppins:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Oswald:500');
 
 body {
     font-family: 'Montserrat', sans-serif;
 }
 
+
 table {
-    width: 1000px;
     color: rgb(0,0,0);
     border-collapse: collapse;
     border-radius: 4px;
     overflow: hidden;
+    width: 100%;
+    margin-top: 20px;
 }
 
 thead {
@@ -17,6 +20,11 @@ thead {
     background-color: rgb(22,40,122);
     height: 55px;
     font-size: 30px;
+}
+
+th {
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .table-link {
@@ -44,13 +52,11 @@ tr:nth-child(even) {
 }
 
 td {
-    font-size: 18px;
+    font-size: 15px;
     padding-left: 10px;
     height: 20px;
     color: rgb(0,0,0);
     text-align: center;
-    vertical-align: middle;
-    padding-top: 3px;
 }
 
 a {
@@ -89,6 +95,7 @@ p {
     border-color: rgb(13,38,230);
 }
 
+
 .form-title {
     margin-top: 0px;
     letter-spacing: 1px;
@@ -102,35 +109,45 @@ p {
 .form-title, a {
     font-weight: bold;
 }
-.nmid-form, .nav-wrap {
+
+.right-side-div {
+    margin-left: 25px;
+}
+
+.nav-wrap {
+    width: 100%;
+    display: flex;
     float: right;
 }
+
 .nmid-form {
     margin-right: 40px;
     margin-bottom: 40px;
 }
+
 .input-file {
 	position: relative;
 	display: inline-block;
 }
-.input-file-btn {
+.submit-btn {
 	position: relative;
 	display: inline-block;
 	cursor: pointer;
 	outline: none;
 	text-decoration: none;
-	font-size: 14px;
+	font-size: 20px;
 	vertical-align: middle;
 	color: rgb(255 255 255);
 	text-align: center;
 	border-radius: 4px;
 	background-color: rgb(25,22,187);
 	line-height: 22px;
-	height: 40px;
-	padding: 10px 20px;
+	height: 50px;
+	width: 200px;
 	box-sizing: border-box;
 	border: none;
-	margin: 0;
+	margin-bottom: 20px;
+	margin-left: 10px;
 	transition: background-color 0.2s;
 }
 .input-file-text {
@@ -146,12 +163,12 @@ p {
 	width: 0;
 	height: 0;
 }
- 
+
 /* Focus */
 .input-file input[type=file]:focus + .input-file-btn {
 	box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
 }
- 
+
 /* Hover/active */
 .input-file-btn:hover {
 	background-color: rgb(13,38,230);
@@ -159,20 +176,146 @@ p {
 .input-file:active .input-file-btn {
 	background-color: #2E703A;
 }
- 
+
 /* Disabled */
 .input-file input[type=file]:disabled + .input-file-btn {
 	background-color: #eee;
 }
 
-.ready-flag {
-    font-size: 30px;
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 25px;
+  margin: 4px;
 }
 
-.pos {
-    color: rgb(114,232,117);
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
-.neg {
-    color: rgb(253,0,17);
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .3s;
+  transition: .3s;
 }
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 17px;
+  width: 17px;
+
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .3s;
+  transition: .3s;
+}
+
+input:checked + .slider {
+  background-color: #1c7dc9;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(15px);
+  -ms-transform: translateX(15px);
+  transform: translateX(15px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.container {
+    display: flex;
+}
+
+.thx{
+  position: fixed;
+  left:50%;
+  transform:translateX(-50%);
+  bottom: 15px;
+}
+nav{
+  text-align:center;
+}
+nav a{
+  font-family: 'Oswald', sans-serif;
+  font-weight:bold;
+  text-transform:uppercase;
+  text-decoration:none;
+  color: rgb(20,20,201);
+  margin:10px;
+  font-size:45px;
+  letter-spacing:1px;
+  position:relative;
+  display:inline-block;
+}
+nav a:before{
+  content:'';
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  background:white;
+  top:47%;
+  animation:out 0.2s cubic-bezier(1, 0, 0.58, 0.97) 1 both;
+}
+nav a:hover:before{
+  animation:in 0.1s cubic-bezier(1, 0, 0.58, 0.97) 1 both;
+
+}
+@keyframes in{
+  0%{
+    width: 0;
+    left:0;
+    right:auto;
+  }
+  100%{
+    left:0;
+    right:auto;
+    width: 100%;
+  }
+}
+@keyframes out{
+  0%{
+    width:100%;
+    left: auto;
+    right: 0;
+  }
+  100%{
+    width: 0;
+    left: auto;
+    right: 0;
+  }
+}
+@keyframes show{
+  0%{
+    opacity:0;
+    transform:translateY(-10px);
+  }
+  100%{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+@for $i from 1 through 5 {
+  nav a:nth-child(#{$i}){
+    animation:show .2s #{$i*0.1+1}s ease 1 both;
+  }
+}
+

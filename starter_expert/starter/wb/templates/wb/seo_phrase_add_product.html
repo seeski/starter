@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>nmid запроса</title>
+</head>
+<body>
+<nav>
+    <a href="{% url 'staff_home' %}">Кабинет</a>
+    <a href="{% url 'wb_seo_phrases' %}">Фразы</a>
+    <a href="{% url 'wb_indexer' %}">NMID'и</a>
+    {% for phrase in phrases %}
+    <a href="{% url 'wb_seo_add_product' phrase=phrase.id %}"></a>
+    {% endfor %}
+    <input type="submit" value="загрузить" class="submit-btn">
+</nav>
+<table>
+    <thead>
+    <tr>
+        <th scope="col">NMID</th>
+        <th scope="col">Название</th>
+        <th scope="col">Ссылка</th>
+        <th scope="col">Запрос</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for data in nmids %}
+    <tr>
+        <td><a href="{% url 'wb_product_reports_data' nmid=data.nmid %}" class="table-link">{{ data.nmid }}</a></td>
+        <td>{{ data.name  }}</td>
+        <td><a href="{{ data.url }}" class="table-link">Подробнее</a></td>
+        {% if data.seo_collector_keywords %}
+        <td>{{ data.seo_collector_keywords }}</td>
+        {% else %}
+        <td>Нет</td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>

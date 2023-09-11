@@ -49,16 +49,14 @@ async def create_nmid_to_report(nmid):
 
 
 @shared_task
-def create_nmid_to_report_task(nmid, user_id):
+def create_nmid_to_report_task(nmid):
     name, nmid_url = async_to_sync(create_nmid_to_report)(nmid)
-    user = User.objects.get(id=user_id)
 
     try:
         models.NmidToBeReported.objects.create(
             nmid=nmid,
             name=name,
             url=nmid_url,
-            user=user
         )
 
     except Exception as e:
@@ -74,6 +72,23 @@ def create_indexer_reports_task():
 
     for nmid in nmids:
         report = models.IndexerReport.objects.create(
-            nmid=nmid.nmid, user=nmid.user
+            nmid=nmid.nmid
         )
         create_indexer_report.delay(report.id, report.nmid)
+
+
+@shared_task
+def create_phrase(phrase):
+    seo_collector = utils.SeoCollector(phrase=phrase)
+    print(phrase)
+    seo_collector.run()
+
+@shared_task
+def set_product_standard(nmid, phrase):
+    try:
+        product_obj = models.NmidToBeReported.objects.all().filter(nmid=nmid)[0]
+        seo_phrase_obj = models.SeoCollectorPhrase.objects.all().filter(phrase=phrase)[0]
+        product_obj.phrase = seo_phrase_obj
+        product_obj.save()
+    except Exception as e:
+        print(f'error at set_product_standard_task: {type(e).__name__} -- {e}')

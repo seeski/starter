@@ -9,6 +9,7 @@ from asgiref.sync import async_to_sync
 
 
 
+
 # приводит каждое слово в переданном тексте к начальной форме
 def normalize_text(text: str) -> str:
     morph = MorphAnalyzer()
@@ -24,23 +25,44 @@ def normalize_text(text: str) -> str:
 # записывает все данные по каждому отчету в IndexerReportData
 def createReportData(report_id, nmid):
     report = models.IndexerReport.objects.get(id=report_id)
-    requests_data = list(models.Request.objects.all())
-
+    nmid_obj = models.NmidToBeReported.objects.all().filter(nmid=nmid)[0]
     indexer = Indexer(nmid)
-    async_to_sync(indexer.search_common)(requests_data)
-    for query in indexer.iterate_resulted_queries():
-        models.IndexerReportData.objects.create(
-            priority_cat=query.get('top_category'),
-            keywords=query.get('keywords'),
-            frequency=query.get('frequency'),
-            req_depth=query.get('req_depth'),
-            existence=query.get('existence'),
-            place=query.get('place'),
-            spot_req_depth=query.get('spot_req_depth'),
-            ad_place=query.get('ad_place'),
-            report=report,
-            product_id=nmid
-        )
+    phrase = nmid_obj.phrase
+
+    if not phrase:
+        print('no phrase data collecting started')
+        requests_data = list(models.Request.objects.all())
+        async_to_sync(indexer.search_common)(requests_data)
+        for query in indexer.iterate_resulted_queries():
+            models.IndexerReportData.objects.create(
+                priority_cat=query.get('top_category'),
+                keywords=query.get('keywords'),
+                frequency=query.get('frequency'),
+                req_depth=query.get('req_depth'),
+                existence=query.get('existence'),
+                place=query.get('place'),
+                spot_req_depth=query.get('spot_req_depth'),
+                ad_place=query.get('ad_place'),
+                report=report,
+                product_id=nmid
+            )
+
+    else:
+        print('phrase data collecting started')
+        standard_queries = models.SeoCollectorPhraseData.objects.all().filter(phrase=phrase, standard=True)
+        for query in indexer.iterate_standard_queries(standard_queries):
+            models.IndexerReportData.objects.create(
+                priority_cat=query.get('top_category'),
+                keywords=query.get('keywords'),
+                frequency=query.get('frequency'),
+                req_depth=query.get('req_depth'),
+                existence=query.get('existence'),
+                place=query.get('place'),
+                spot_req_depth=query.get('spot_req_depth'),
+                ad_place=query.get('ad_place'),
+                report=report,
+                product_id=nmid
+            )
 
     report.ready = True
     report.save()
@@ -51,8 +73,7 @@ class NmidContextOperator:
         self.requests = requests
         self.reports = reports
         self.__create_context()
-        for request in self.requests:
-            print(self.requests[request])
+
 
 
     def __iterate_report_data(self, report_data):
@@ -80,7 +101,7 @@ class FileOperator:
     # для работы с excel файлами требуется установка openpyexcel
 
     # метод для получения nmid товаров из эксель файла
-    def iterate_nmids(self, filepath: str):
+    def iterate_excel_file(self, filepath: str):
         book = load_workbook(filepath)
         sheet = book.active
         nmids = set()
@@ -204,7 +225,7 @@ class URLOperator:
         for backet_number in self.card_url_template_ranges:
             start = self.card_url_template_ranges[backet_number][0]
             end = self.card_url_template_ranges[backet_number][1]
-            if start <= product_id // 100000 <= end:
+            if start <= int(product_id) // 100000 <= end:
                 return pre_url.replace('replace_me', backet_number)
 
         return pre_url.replace('replace_me', '13')
@@ -213,7 +234,7 @@ class URLOperator:
     # создание ссылки для сбора информации о рекламе
     def create_ad_url(self, query: str) -> str:
         return self.ad_url_template.format(
-            query.strip().replace(' ', '%20')
+            query.strip()
         )
 
 
@@ -224,14 +245,14 @@ class URLOperator:
     def create_filtered_by_brand_url(self, query, brand_id):
         return self.filtered_by_brand_id_url_template.format(
             brand_id=brand_id,
-            query=query.strip().replace(' ', '%20')
+            query=query.strip()
         ).replace('replace_me', '1')
 
 
     # создание ссылки для получения глубины выдачи
     def create_query_req_depth_url(self, query):
         return self.any_query_req_depth_url_template.format(
-            query.strip().replace(' ', '%20')
+            query.strip()
         )
 
 
@@ -240,20 +261,19 @@ class URLOperator:
     # без каких либо фильтров или орграничений
     def create_query_url(self, query):
         return self.any_query_url_template.format(
-            query.strip().replace(' ', '%20')
+            query.strip()
         )
 
     # создает ссылку для получения инфы от апи по категориям по определенному запросу в выдаче
     # вызывается в том случае, если топ категория по определенному запросу не была получена
     def create_query_categories_url(self, query):
         # print(f'{query} query text')
-        # print(f"{self.query_categories_url_template.format(query.strip().replace(' ', '%20'))} url text")
+        # print(f"{self.query_categories_url_template.format(query.strip())} url text")
         return self.query_categories_url_template.format(
-            query.strip().replace(' ', '%20')
+            query.strip()
         )
 
     def create_nmid_detail_url(self, nmid):
-
         return self.nmid_detail_url_template.format(nmid)
 
 
@@ -422,7 +442,7 @@ class DataCollector:
 
     # если нет топ категории по рекламе(запрос уебанский), то этот метод возвращает категорию
     # у которой наибольшее число товаров по опреденному запросу
-    async def get_query_most_category(self, query_categories_url):
+    async def get_most_category(self, query_categories_url):
         category = ''
         count = 0
         async with AsyncClient() as client:
@@ -439,6 +459,7 @@ class DataCollector:
 
             except Exception as e:
                 print(f'error at  get_query_most_category {query_categories_url} {e}')
+                return ''
 
 
 
@@ -561,6 +582,31 @@ class DataCollector:
             return requests_data
 
 
+    async def get_first_ten_product(self, query_url, phrase):
+        nmids = []
+        query_url = query_url.replace('replace_me', '1')
+
+        async with AsyncClient() as client:
+            try:
+                resp = await client.get(query_url, timeout=None)
+                resp = resp.json()
+                products = resp.get('data').get('products')
+                if not products:
+                    return nmids
+
+                counter = 1
+                for product in products:
+                    if counter <= 10:
+                        nmids.append(str(product.get('id', '')))
+                        counter += 1
+                    else:
+                        break
+
+                return nmids
+            except Exception as e:
+                print(f'{type(e).__name__} :: {e} handled during get_first_ten_products')
+
+
 class DataOperator:
 
     def __init__(self, nmid='', desc=''):
@@ -612,13 +658,16 @@ class Indexer:
 
     url_operator = URLOperator()
     data_collector = DataCollector()
+    data_operator = DataOperator()
 
 
-    def __init__(self, nmid):
+    def __init__(self, nmid=None):
         self.nmid = nmid
 
-    async def search_common(self, requests_data):
+    async def get_standard(self):
 
+        pass
+    async def search_common(self, requests_data):
 
         card_url = self.url_operator.create_card_url(self.nmid)
         detail_card_url = self.url_operator.create_nmid_detail_url(self.nmid)
@@ -635,7 +684,7 @@ class Indexer:
         brand_id = await self.data_collector.get_brand_id(detail_url)
         return brand_id
 
-    async def __get_req_depth(self, query):
+    async def get_req_depth(self, query):
         query_req_depth_url = self.url_operator.create_query_req_depth_url(query)
         total = await self.data_collector.get_req_depth(query_req_depth_url)
         return total
@@ -664,7 +713,7 @@ class Indexer:
         place = self.data_operator.check_first_ten_pages(products)
         return place
 
-    async def __get_top_category(self, query):
+    async def get_top_category(self, query):
         subject_base_url = self.url_operator.subject_base_url
         ad_info_url = self.url_operator.create_ad_url(query)
         subject_base = await self.data_collector.get_subject_base(subject_base_url)
@@ -676,7 +725,7 @@ class Indexer:
         else:
             query_category_url = self.url_operator.create_query_categories_url(query)
 
-            most_category = await self.data_collector.get_query_most_category(query_category_url)
+            most_category = await self.data_collector.get_most_category(query_category_url)
             return most_category
 
 
@@ -684,8 +733,8 @@ class Indexer:
         for query in self.resulted_queries:
             keywords = query.keywords
             frequency = query.frequency
-            top_category =  async_to_sync(self.__get_top_category)(keywords)
-            req_depth =  async_to_sync(self.__get_req_depth)(keywords)
+            top_category =  async_to_sync(self.get_top_category)(keywords)
+            req_depth =  async_to_sync(self.get_req_depth)(keywords)
             existence =  async_to_sync(self.__get_existence)(keywords)
 
             if existence:
@@ -709,3 +758,84 @@ class Indexer:
                 'place': place, 'spot_req_depth': spot_req_depth,
                 'ad_spots': ad_spots, 'ad_place': ad_place
             }
+
+    def iterate_standard_queries(self, standard_queries):
+        for query in standard_queries:
+            keywords = query.query
+            frequency = None
+            top_category =  async_to_sync(self.get_top_category)(keywords)
+            req_depth =  async_to_sync(self.get_req_depth)(keywords)
+            existence =  async_to_sync(self.__get_existence)(keywords)
+
+            if existence:
+                ad_info = async_to_sync(self.__get_ad_info)(keywords)
+                ad_spots = ad_info.get('ad_spots')
+                ad_place = ad_info.get('ad_place')
+                place =  async_to_sync(self.__get_place)(keywords)
+
+                if req_depth != 0:
+                    if not place:
+                        place = req_depth + 1
+                    percent = (place / req_depth) * 100
+                    spot_req_depth = str(round(percent, 2)).replace('.', ';')
+            else:
+                ad_spots, ad_place, place, spot_req_depth = [None] * 4
+
+            yield {
+                'nmid': self.nmid, 'top_category': top_category,
+                'keywords': keywords, 'frequency': frequency,
+                'req_depth': req_depth, 'existence': existence,
+                'place': place, 'spot_req_depth': spot_req_depth,
+                'ad_spots': ad_spots, 'ad_place': ad_place
+            }
+
+
+
+    def iterate_resulted_queries_seo(self):
+        for query in self.resulted_queries:
+            keywords = query.keywords
+            top_category = async_to_sync(self.get_top_category)(keywords)
+            yield {
+                'keywords': keywords, 'top_category': top_category
+            }
+
+class SeoCollector:
+
+    url_operator = URLOperator()
+    data_collector = DataCollector()
+    indexer = Indexer()
+    depth = 10
+
+    def __init__(self, phrase):
+        self.requests_data = list(models.Request.objects.all())
+        self.phrase = phrase
+
+
+    def run(self):
+        if models.SeoCollectorPhrase.objects.filter(phrase=self.phrase).first() is None:
+            req_depth = async_to_sync(self.indexer.get_req_depth)(self.phrase)
+            priority_cat = async_to_sync(self.indexer.get_top_category)(self.phrase)
+            phrase_obj = models.SeoCollectorPhrase.objects.create(phrase=self.phrase, priority_cat=priority_cat, req_depth=req_depth)
+
+            query_url = self.url_operator.create_query_url(self.phrase)
+            products = async_to_sync(self.data_collector.get_first_ten_product)(query_url, self.phrase)
+            seen = set()
+
+            for product in products:
+                indexer = Indexer(product)
+                async_to_sync(indexer.search_common)(self.requests_data)
+                for query in indexer.iterate_resulted_queries_seo():
+                    keywords = query.get('keywords')
+                    if not keywords in seen:
+                        if query.get('top_category') == phrase_obj.priority_cat:
+                            standard = True
+                        else:
+                            standard = False
+                        models.SeoCollectorPhraseData.objects.create(
+                            query=keywords, priority_cat=query.get('top_category'),
+                            phrase=phrase_obj, standard=standard
+                        )
+                    seen.add(keywords)
+
+            phrase_obj.ready = True
+            phrase_obj.save()

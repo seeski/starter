@@ -8,8 +8,7 @@ class NmidToBeReported(models.Model):
     nmid = models.IntegerField(null=False, unique=True)
     name = models.CharField(max_length=255)
     url = models.URLField()
-    # seo_collector_keywords_id = models.ForeignKey('Seo_collector_report', null=True, blank=True, on_delete=models.SET_NULL)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    phrase = models.ForeignKey('SeoCollectorPhrase', blank=True, null=True, on_delete=models.SET_NULL, default=None)
     class Meta:
         verbose_name = "Товар"
         verbose_name_plural = "Товары"
@@ -26,7 +25,7 @@ class IndexerReport(models.Model):
     nmid = models.IntegerField(null=False)
     date = models.DateTimeField(auto_now_add=True)
     ready = models.BooleanField(default=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
     class Meta:
         verbose_name_plural = "Индексатор, Отчеты"
         verbose_name = 'Отчет по индексатору'
@@ -48,7 +47,7 @@ class IndexerReportData(models.Model):
 
     priority_cat = models.CharField(max_length=255, blank=True, null=True)
     keywords = models.CharField(max_length=255)
-    frequency = models.IntegerField()
+    frequency = models.IntegerField(null=True)
     req_depth = models.IntegerField()
     existence = models.BooleanField()
     place = models.IntegerField(null=True, default=None)
@@ -82,3 +81,30 @@ class Cabinet(models.Model):
     class Meta:
         verbose_name = 'Кабинет'
         verbose_name_plural = 'Кабинеты'
+
+
+class SeoCollectorPhrase(models.Model):
+
+    phrase = models.CharField(max_length=255, unique=True)
+    date = models.DateTimeField(auto_now_add=True)
+    req_depth = models.IntegerField()
+    priority_cat = models.CharField(max_length=255, default='')
+    ready = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.phrase
+
+    class Meta:
+        verbose_name = 'Фраза'
+        verbose_name_plural = 'Фразы'
+
+class SeoCollectorPhraseData(models.Model):
+
+    query = models.CharField(max_length=255)
+    priority_cat = models.CharField(max_length=255)
+    standard = models.BooleanField(default=False)
+    phrase = models.ForeignKey(SeoCollectorPhrase, null=False, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'Данные по отчету'
+        verbose_name_plural = 'Данные по отчету'

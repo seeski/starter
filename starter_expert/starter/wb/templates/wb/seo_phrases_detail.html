@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<head>
+    <title>Сео Фраза</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'wb/css/seo_phrases_detail.css' %}">
+</head>
+<body>
+<nav>
+    <a href="{% url 'staff_home' %}">Кабинет</a>
+    <a href="{% url 'wb_seo_phrases' %}">Фразы</a>
+    <a href="{% url 'wb_indexer' %}">NMID'и</a>
+    {% for phrase in phrases %}
+    <a href="{% url 'wb_seo_add_product' phrase=phrase.id %}">товары по фразе</a>
+    {% endfor %}
+</nav>
+{% for phrase in phrases %}
+    <form action="{% url 'wb_seo_phrases_detail' phrase=phrase.id %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="submit" value="загрузить" class="submit-btn">
+    <table>
+    <thead>
+    <tr>
+        <th scope="col">Запрос</th>
+        <th scope="col">Категория</th>
+        <th scope="col">Эталон</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for query in queries %}
+    <tr>
+        <td>{{ query.query }}</td>
+        <td>{{ query.priority_cat }}</td>
+        {% if query.standard %}
+            <td>
+                    <label class="switch">
+                      <input type="checkbox" checked name="standards" value="{{ query.id }}">
+                      <span class="slider round"></span>
+                    </label>
+        </td>
+        {% else %}
+        <td>
+            <label class="switch">
+              <input type="checkbox" name="standards" value="{{ query.id }}">
+              <span class="slider round"></span>
+            </label>
+        </td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+</form>
+{% endfor %}
+</body>
+</html>

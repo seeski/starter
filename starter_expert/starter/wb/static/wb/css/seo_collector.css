@@ -146,12 +146,12 @@ p {
 	width: 0;
 	height: 0;
 }
- 
+
 /* Focus */
 .input-file input[type=file]:focus + .input-file-btn {
 	box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
 }
- 
+
 /* Hover/active */
 .input-file-btn:hover {
 	background-color: rgb(13,38,230);
@@ -159,7 +159,7 @@ p {
 .input-file:active .input-file-btn {
 	background-color: #2E703A;
 }
- 
+
 /* Disabled */
 .input-file input[type=file]:disabled + .input-file-btn {
 	background-color: #eee;
@@ -175,4 +175,8 @@ p {
 
 .neg {
     color: rgb(253,0,17);
+}
+
+.container {
+    display: flex;
 }

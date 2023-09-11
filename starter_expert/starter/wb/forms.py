@@ -1,4 +1,4 @@
 from django import forms
 
-class Upload_nmids_form(forms.Form):
+class Upload_excel_file(forms.Form):
     file = forms.FileField()

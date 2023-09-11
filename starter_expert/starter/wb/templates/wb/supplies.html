@@ -2,38 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Поставки</title>
-    {% load wb_indexer %}
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'wb/css/supplies.css' %}">
+    <title>Кабинеты</title>
 </head>
 <body>
 {% for cabinet in cabinets %}
-<table>
-    <caption>{{ cabinet }}</caption>
-    <thead>
-    <tr>
-        <th scope="col">QR-код</th>
-        <th scope="col">Название</th>
-        <th scope="col">Дата</th>
-        <th scope="col">Скан</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for supply in cabinets|get_dict_value:cabinet %}
-    <tr>
-        <td>{{ supply.qr }}</td>
-        <td>{{ supply.supply_name }}</td>
-        <td>{{ supply.date|date:'d.m' }}</td>
-        {% if supply.scan %}
-        <td class="pos-scan">&#9679;</td>
-        {% else %}
-        <td class="neg-scan">&#9679;</td>
-        {% endif %}
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
+<a href="{% url 'wb_supplies_detail' cabinet=cabinet.id %}">{{ cabinet.name }}</a>
 {% endfor %}
 </body>
 </html>
