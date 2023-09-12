@@ -1,0 +1,25 @@
+{% extends 'ozon/base.html' %}
+
+{% block content %}
+	<div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
+		<form style="width: 22rem;" method="post">
+			{% csrf_token %}
+	        <!-- Email input -->
+	        <div class="form-outline mb-4">
+	          <input type="login" id="form2Example1" class="form-control" name="username">
+	          <label class="form-label" for="form2Example1" style="margin-left: 0px;">Логин</label>
+	        <div class="form-notch"><div class="form-notch-leading" style="width: 9px;"></div><div class="form-notch-middle" style="width: 88.8px;"></div><div class="form-notch-trailing"></div></div></div>
+
+	        <!-- Password input -->
+	        <div class="form-outline mb-4">
+	          <input type="password" id="form2Example2" class="form-control" name="password">
+	          <label class="form-label" for="form2Example2" style="margin-left: 0px;">Пароль</label>
+	        <div class="form-notch"><div class="form-notch-leading" style="width: 9px;"></div><div class="form-notch-middle" style="width: 64.8px;"></div><div class="form-notch-trailing"></div></div></div>
+
+	        <!-- 2 column grid layout for inline styling -->
+
+	        <!-- Submit button -->
+	        <button type="submit" class="btn btn-primary btn-block mb-4">Войти</button>
+	    </form>
+	</div>
+{% endblock %}

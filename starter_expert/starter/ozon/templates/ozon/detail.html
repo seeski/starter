@@ -1,0 +1,71 @@
+{% extends 'ozon/base.html' %}
+{% block content %}
+  <div class="">
+    <table class="table align-middle mb-0 bg-white">
+      <thead class="bg-light">
+        <tr>
+        	<th colspan="4" class="text-center text-dark sticky">Запросы</th>
+        	{% for date in date_list %}
+        	<th colspan="4" class="text-center border-start">{{ date }}</th>
+        	{% endfor %}
+        </tr>
+       </thead>
+       <tbody>
+       	<tr>
+       		<td colspan="4" class="sticky"><div></div></td>
+       		{% for date in date_list %}
+	       		<td class="text-center border-start">Индексируется</td>
+	       		<td class="text-center">Глубина выдачи</td>
+	       		<td class="text-center">Место</td>
+	       		<td class="text-center">Топовая категория</td>
+	       	{% endfor %}
+       	</tr>
+       	{% for row in table %}
+	       	<tr>
+	       		<td colspan="4" class="text-center text-dark sticky"><strong>{{ row.0 }}</strong></td>
+	       		{% for report_data in row|slice:"1:" %}
+	       			{% if report_data is not None %}
+		       			{% if report_data.existence %}
+			       		<td class="text-center badge-success border-start">Да</td>
+			       		{% else %}
+			       		<td class="text-center badge-danger border-start">Нет</td>
+			       		{% endif %}
+			       		<td class="text-center"><span class="badge-warning badge">{{ report_data.req_depth }}</span></td>
+			       		<td class="text-center">{{ report_data.place }}</td>
+			       		{% if report_data.priority_cat %}
+			       		<td class="text-center"><span class="badge badge-success rounded-pill d-inline">{{ report_data.priority_cat }}</span></td>
+			       		{% else %}
+			       		<td class="text-center"><span class="badge badge-danger rounded-pill d-inline">Отсутствует</span></td>
+			       		{% endif %}
+			      {% else %}
+			      		<td class="text-center" colspan="4"><span class="badge-warning badge">Отсутствует</span></td>
+			      {% endif %}
+		       	{% endfor %}
+	       	</tr>
+	    {% endfor %}
+       </tbody>
+    </table>
+  </div>
+  <style>
+  table {
+  	border-collapse: separate !important;
+  }
+  .sticky{
+  		position: sticky;
+		  background: white !important;
+		  border-bottom:1px solid rgb(225, 225, 225) !important;
+		  border-right:1px solid rgb(225, 225, 225) !important;
+		  z-index: 43211;
+		  left: 0;
+  	}
+  	tr{
+  		padding: 0px !important;
+  	}
+  	th{
+  		padding: 0px !important; 
+  	}
+  	td{
+  		padding: 0px !important;
+  	}
+  </style>
+{% endblock %}
