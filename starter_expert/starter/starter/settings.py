@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'account',
     'wb',
+    'ozon',
 ]
 
 MIDDLEWARE = [
@@ -148,3 +149,52 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 20480
+
+IMPERSONATE = "chrome110"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        'classic_formater': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "classic_formater",
+        },
+        "ozon_file_output": {
+            "class": "logging.FileHandler",
+            "filename": "./output_indexer.log",
+            "formatter": 'classic_formater',
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "WARNING",
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "ozon_indexer": {
+            "handlers": ["ozon_file_output", "console"],
+            "level": "DEBUG",
+        }
+    },
+}
+
+ONLY_PROXY = False
+
+PROXIES = [
+    #{'https': 'socks5://SSZ9fn:vXbCdciP0x@185.181.246.191:1051'},
+    #{'https': 'socks5://SSZ9fn:vXbCdciP0x@188.130.143.247:1051'},
+    #{'https': 'socks5://SSZ9fn:vXbCdciP0x@46.8.110.195:1051'},
+    #{'https': 'socks5://SSZ9fn:vXbCdciP0x@109.248.54.183:1051'},
+    #{'https': 'socks5://SSZ9fn:vXbCdciP0x@95.182.125.71:1051'},
+]

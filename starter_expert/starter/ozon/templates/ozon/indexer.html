@@ -1,0 +1,48 @@
+{% extends 'ozon/base.html' %}
+{% block content %}
+  <div class="container">
+    <div class="col-4">
+      <form method="post" enctype="multipart/form-data" action="{% url 'ozon_indexer' %}">
+          {% csrf_token %}
+          <h3 class="form-title">Добавить NMID</h3>
+          <label for="formFileSm" class="form-label">Выберите файл</label>
+          <div class="d-flex">
+            <input class="form-control form-control-sm" id="formFileSm" type="file" name="file"/>
+          </div>
+          <br/>
+          <input type="submit" class="btn btn-success"/>
+      </form>
+    </div>
+    <br/>
+    <table class="table align-middle mb-0 bg-white">
+      <thead class="bg-light">
+        <tr>
+          <th>NMID</th>
+          <th>Название</th>
+          <th>О товаре</th>
+          <th>Статистика</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in page_obj %}
+          <tr>
+            <td>
+              <p class="fw-normal mb-1">{{ p.nmid }}</p>
+            </td>
+            <td>
+              <p class="text-muted mb-0">{{ p.name }}</p>
+            </td>
+            <td>
+              <a href="https://www.ozon.ru/product/{{ p.nmid }}/" type="button" class="">Посмотреть товар</a>
+            </td>
+            <td>
+              <a href="{% url 'detail_report_info' nmid=p.nmid %}" type="button" class="btn-link">
+                Запросы
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('staff/wb/', include('wb.urls')),
     path('account/', include('account.urls')),
+    path('staff/ozon/', include('ozon.urls'))
 ]
