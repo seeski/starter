@@ -1,0 +1,43 @@
+<header>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white">
+    <div class="container-fluid">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-mdb-toggle="collapse"
+        data-mdb-target="#navbarExample01"
+        aria-controls="navbarExample01"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="collapse navbar-collapse justify-content-between" id="navbarExample01">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'ozon_indexer' %}">Главная</a>
+          </li>
+          {% if request.user.is_anonymous %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'login' %}">Войти</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'logout' %}">Выйти</a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- Navbar -->
+</header>
+<br/>
+<style type="text/css">
+  header {
+    position: sticky;
+    top: 0px;
+    z-index: 10000000;
+  }
+</style>

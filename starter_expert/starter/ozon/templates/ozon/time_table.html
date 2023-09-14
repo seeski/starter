@@ -1,0 +1,27 @@
+<table class="table align-middle mb-0 bg-white">
+  <div>{{ title }}</div>
+  <thead class="bg-light">
+    <tr>
+      <th>existence</th>
+      <th>req_depth</th>
+      <th>top_category</th>
+      <th>place</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for query in keywords %}
+      <tr>
+        <td>
+          <p class="fw-normal mb-1">{{ query.existence }}</p>
+        </td>
+        <td>
+          <p class="text-muted mb-0">{{ query.req_depth }}</p>
+        </td>
+        <td><p class="text-muted mb-0">{{ query.top_category }}</p></td>
+        <td>
+          <p class="text-muted mb-0">{{ query.place }}</p>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
