@@ -36,3 +36,12 @@ td {
 .tbl-wrap {
     overflow: auto;
 }
+
+a {
+    text-decoration: none;
+    color: rgb(25,22,187);
+}
+
+a:hover {
+    color: rgb(13,38,230);
+}

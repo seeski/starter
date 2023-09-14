@@ -73,6 +73,7 @@ class NmidContextOperator:
         self.requests = requests
         self.reports = reports
         self.__create_context()
+        self.requests = dict(sorted(self.requests.items()))
 
 
 
@@ -84,6 +85,9 @@ class NmidContextOperator:
                 self.requests[request].append({'place': row_data.place, 'req_depth': row_data.req_depth})
             else:
                 self.requests[request].append({'place': None, 'req_depth': None})
+
+
+
     def __create_context(self):
         for report in self.reports:
             report_data_queryset = models.IndexerReportData.objects.all().filter(report=report)
@@ -91,6 +95,7 @@ class NmidContextOperator:
                 [data.keywords for data in report_data_queryset],
                 list(report_data_queryset)
             ))
+
             self.__iterate_report_data(report_data)
 
 

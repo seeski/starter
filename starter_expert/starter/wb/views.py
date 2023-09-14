@@ -35,6 +35,7 @@ class SeoPhrasesView(ListView):
     template_name = 'wb/seo_collector.html'
     paginate_by = 100
     model = SeoCollectorPhrase
+
     context_object_name = 'phrases'
 
     def post(self, request):
@@ -112,6 +113,7 @@ class SuppliesView(ListView):
 
 
 def nmid_view(request, nmid):
+    nmid_obj = NmidToBeReported.objects.all().get(nmid=nmid)
     context = {}
     requests_list = list(data['keywords'] for data in IndexerReportData.objects.all().filter(product_id=nmid).values('keywords').distinct())
     requests = dict([(i,[]) for i in requests_list])
@@ -119,6 +121,8 @@ def nmid_view(request, nmid):
     context_operator = utils.NmidContextOperator(requests, reports)
     context['reports'] = reports
     context['requests'] = context_operator.requests
+    context['product'] = nmid_obj
+
     return render(request, 'wb/nmid.html', context)
 
 def supplies_detail(request, cabinet):
