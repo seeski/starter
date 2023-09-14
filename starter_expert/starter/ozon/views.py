@@ -21,8 +21,7 @@ from django.views import View
 
 
 class IndexerLoginRequiredMixin(LoginRequiredMixin):
-    login_url = "/login/"
-    redirect_field_name = "/indexer/"
+    redirect_field_name = "/account/cabinet/"
 
 
 class IndexerView(IndexerLoginRequiredMixin, ListView):
