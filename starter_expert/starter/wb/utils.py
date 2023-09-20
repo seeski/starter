@@ -8,7 +8,12 @@ from httpx import AsyncClient
 from asgiref.sync import async_to_sync
 
 
-
+def check_int(el):
+    try:
+        num = int(el)
+        return num
+    except:
+        return None
 
 # приводит каждое слово в переданном тексте к начальной форме
 def normalize_text(text: str) -> str:
@@ -29,25 +34,25 @@ def createReportData(report_id, nmid):
     indexer = Indexer(nmid)
     phrase = nmid_obj.phrase
 
-    if not phrase:
-        print('no phrase data collecting started')
-        requests_data = list(models.Request.objects.all())
-        async_to_sync(indexer.search_common)(requests_data)
-        for query in indexer.iterate_resulted_queries():
-            models.IndexerReportData.objects.create(
-                priority_cat=query.get('top_category'),
-                keywords=query.get('keywords'),
-                frequency=query.get('frequency'),
-                req_depth=query.get('req_depth'),
-                existence=query.get('existence'),
-                place=query.get('place'),
-                spot_req_depth=query.get('spot_req_depth'),
-                ad_place=query.get('ad_place'),
-                report=report,
-                product_id=nmid
-            )
-
-    else:
+    if phrase:
+    #     print('no phrase data collecting started')
+    #     requests_data = list(models.Request.objects.all())
+    #     async_to_sync(indexer.search_common)(requests_data)
+    #     for query in indexer.iterate_resulted_queries():
+    #         models.IndexerReportData.objects.create(
+    #             priority_cat=query.get('top_category'),
+    #             keywords=query.get('keywords'),
+    #             frequency=query.get('frequency'),
+    #             req_depth=query.get('req_depth'),
+    #             existence=query.get('existence'),
+    #             place=query.get('place'),
+    #             spot_req_depth=query.get('spot_req_depth'),
+    #             ad_place=query.get('ad_place'),
+    #             report=report,
+    #             product_id=nmid
+    #         )
+    #
+    # else:
         print('phrase data collecting started')
         standard_queries = models.SeoCollectorPhraseData.objects.all().filter(phrase=phrase, standard=True)
         for query in indexer.iterate_standard_queries(standard_queries):
@@ -375,6 +380,7 @@ class DataCollector:
                     resp = await client.get(query_url, timeout=None)
                     resp = resp.json()
                     products = resp.get('data').get('products')
+                    print(len('products'))
                     if not products:
                         return ids
 
@@ -557,7 +563,7 @@ class DataCollector:
             resp = resp.json()
             enc_data = resp['data']['file']
             data = base64.b64decode(enc_data).decode('utf-8')
-            queriesAsStrs = data.split('\n')
+            queriesAsStrs = data.split('\n')[:30000]
 
             # проходимся по каждой строчке, предварительно сплитили по переносу
             # роспаковываем на запрос и частоту

@@ -12,6 +12,14 @@
         <p><a href="{% url 'logout' %}">Выйти</a></p>
         <p><a href="{% url 'staff_home' %}">Кабинет</a></p>
     </div>
+        <form action="{% url 'wb_seo_phrases' %}" method="post" enctype="multipart/form-data" class="nmid-form">
+        {% csrf_token %}
+        <h3 class="form-title">Добавить фразу</h3>
+        <label class="input-file">
+            <input type="text" name="add_phrase" placeholder="Введите NMID" class="one-nmid-form">
+            <input type="submit" value="загрузить" class="submit-btn">
+        </label>
+    </form>
 <form method="post" enctype="multipart/form-data" action="{% url 'wb_seo_phrases' %}" class="nmid-form">
     {% csrf_token %}
     <h3 class="form-title">Добавить фразы</h3>

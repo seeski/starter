@@ -1,9 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from . import utils
 from . import tasks
 from django.views.generic import ListView, View
 from .models import *
-from .forms import Upload_excel_file
+from .forms import *
 from asgiref.sync import async_to_sync
 from django.db.models import Avg, Q
 import asyncio
@@ -19,14 +19,30 @@ class IndexerView(ListView):
     object_list = []
 
     def post(self, request):
-        form = Upload_excel_file(request.POST, request.FILES)
-        if form.is_valid():
+        file_form = Upload_excel_file(request.POST, request.FILES)
+        add_nmid_value = utils.check_int(request.POST.get('add_nmid'))
+        search_value = utils.check_int(request.POST.get('search'))
+        if file_form.is_valid():
             file_operator = utils.FileOperator()
             nmids = file_operator.iterate_excel_file(request.FILES['file'].file)
             for nmid in nmids:
                 tasks.create_nmid_to_report_task.delay(nmid)
 
-        return render(request, self.template_name)
+        if add_nmid_value:
+            tasks.create_nmid_to_report_task.delay(int(add_nmid_value))
+        if search_value:
+            product_obj = self.model.objects.all().filter(nmid=search_value).filter()
+            if product_obj:
+                return redirect('wb_product_reports_data', nmid=search_value)
+
+        return render(request, self.template_name, self.get_context_data())
+
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['nmids'] = self.model.objects.all()
+        return context
+
 
 
 
@@ -35,20 +51,30 @@ class SeoPhrasesView(ListView):
     template_name = 'wb/seo_collector.html'
     paginate_by = 100
     model = SeoCollectorPhrase
+    object_list = []
 
     context_object_name = 'phrases'
 
     def post(self, request):
-        form = Upload_excel_file(request.POST, request.FILES)
-        if form.is_valid():
+        file_form = Upload_excel_file(request.POST, request.FILES)
+        phrase = request.POST.get('add_phrase')
+        if file_form.is_valid():
             SeoCollectorPhrase.objects.all().delete()
             file_operator = utils.FileOperator()
             phrases = file_operator.iterate_excel_file(request.FILES['file'].file)
             for phrase in phrases:
                 tasks.create_phrase.delay(phrase)
 
-        return render(request, self.template_name)
+        if phrase:
+            tasks.create_phrase.delay(phrase)
 
+        return render(request, self.template_name, self.get_context_data())
+
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['phrases'] = self.model.objects.all()
+        return context
 
 
 class SeoPhrasesDetailView(ListView):
@@ -60,9 +86,7 @@ class SeoPhrasesDetailView(ListView):
 
     def post(self, request, phrase):
         standards = request.POST.getlist('standards')
-        context = self.get_context_data()
-        print(context)
-        print(standards)
+
         for query in context['queries']:
             if str(query.id) in standards:
                 print('true')
@@ -83,24 +107,32 @@ class SeoPhrasesDetailView(ListView):
 
 class SeoPhraseAddProduct(ListView):
     model = NmidToBeReported
-    template_name = 'wb/indexer.html'
+    template_name = 'wb/seo_phrase_add_product.html'
+    object_list = []
 
     def post(self, request, phrase):
         form = Upload_excel_file(request.POST, request.FILES)
+        add_nmid = utils.check_int(request.POST.get('add_nmid'))
+
         if form.is_valid():
             file_operator = utils.FileOperator()
             nmids = file_operator.iterate_excel_file(request.FILES['file'].file)
             for nmid in nmids:
                 print(nmid, type(nmid))
-                tasks.set_product_standard.delay(nmid)
+                tasks.set_product_standard.delay(nmid, int(phrase))
+
+        if add_nmid:
+            tasks.set_product_standard.delay(add_nmid, int(phrase))
+
+
 
         return render(request, self.template_name, self.get_context_data())
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        phrase = SeoCollectorPhrase.objects.all().filter(id=self.kwargs.get('phrase'))[0]
-        print(phrase)
+        phrase = SeoCollectorPhrase.objects.all().filter(id=self.kwargs.get('phrase')).first()
         context['nmids'] = self.model.objects.all().filter(phrase=phrase)
+        context['phrases'] = [phrase]
         return context
 
 

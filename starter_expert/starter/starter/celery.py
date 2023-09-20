@@ -19,10 +19,10 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.conf.beat_schedule = {
     'update-requests-file': {
         'task': 'wb.tasks.update_requests_task',
-        'schedule': crontab(hour=18, minute=20, day_of_week='monday'),
+        'schedule': crontab(hour=18, minute=20, day_of_week='tuesday'),
     },
 
-    'indexer-daily-report': {
+    'indexer-daily-report-wb': {
         'task': 'wb.tasks.create_indexer_reports_task',
         'schedule': crontab(hour=21,minute=0)
     },

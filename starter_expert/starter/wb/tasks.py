@@ -86,8 +86,8 @@ def create_phrase(phrase):
 @shared_task
 def set_product_standard(nmid, phrase):
     try:
-        product_obj = models.NmidToBeReported.objects.all().filter(nmid=nmid)[0]
-        seo_phrase_obj = models.SeoCollectorPhrase.objects.all().filter(phrase=phrase)[0]
+        product_obj = models.NmidToBeReported.objects.all().filter(nmid=nmid).first()
+        seo_phrase_obj = models.SeoCollectorPhrase.objects.all().filter(id=phrase).first()
         product_obj.phrase = seo_phrase_obj
         product_obj.save()
     except Exception as e:

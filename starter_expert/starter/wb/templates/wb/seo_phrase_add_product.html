@@ -2,18 +2,45 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>nmid запроса</title>
+    <title>Индексация</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'wb/css/indexer.css' %}">
 </head>
 <body>
-<nav>
-    <a href="{% url 'staff_home' %}">Кабинет</a>
-    <a href="{% url 'wb_seo_phrases' %}">Фразы</a>
-    <a href="{% url 'wb_indexer' %}">NMID'и</a>
+<div class="topic">
+    <div class="nav-wrap">
+        <p><a href="{% url 'logout' %}">Выйти</a></p>
+        <p><a href="{% url 'staff_home' %}">Кабинет</a></p>
+    </div>
     {% for phrase in phrases %}
-    <a href="{% url 'wb_seo_add_product' phrase=phrase.id %}"></a>
+<!--        <form action="{% url 'wb_seo_add_product' phrase=phrase.id %}" method="post" enctype="multipart/form-data" class="nmid-form">-->
+<!--        {% csrf_token %}-->
+<!--        <h3 class="form-title">Поиск</h3>-->
+<!--        <label class="input-file">-->
+<!--            <input type="text" name="search" placeholder="Найти NMID" class="one-nmid-form">-->
+<!--            <input type="submit" value="&#8594;" class="search-btn">-->
+<!--        </label>-->
+<!--    </form>-->
+    <form action="{% url 'wb_seo_add_product' phrase=phrase.id  %}" method="post" enctype="multipart/form-data" class="nmid-form">
+        {% csrf_token %}
+        <h3 class="form-title">Добавить NMID</h3>
+        <label class="input-file">
+            <input type="text" name="add_nmid" placeholder="Введите NMID" class="one-nmid-form">
+            <input type="submit" value="загрузить" class="submit-btn">
+        </label>
+    </form>
+    <form method="post" enctype="multipart/form-data" action="{% url 'wb_seo_add_product' phrase=phrase.id  %}" class="nmid-form">
+        {% csrf_token %}
+        <h3 class="form-title">Добавить NMID'и</h3>
+        <label class="input-file">
+            <input type="file" name="file">
+            <span class="input-file-btn">Выберите файл</span>
+            <input type="submit" value="загрузить" class="submit-btn">
+        </label>
+    </form>
     {% endfor %}
-    <input type="submit" value="загрузить" class="submit-btn">
-</nav>
+</div>
+<h1 class="table-title">NMID'и</h1>
 <table>
     <thead>
     <tr>
@@ -29,8 +56,8 @@
         <td><a href="{% url 'wb_product_reports_data' nmid=data.nmid %}" class="table-link">{{ data.nmid }}</a></td>
         <td>{{ data.name  }}</td>
         <td><a href="{{ data.url }}" class="table-link">Подробнее</a></td>
-        {% if data.seo_collector_keywords %}
-        <td>{{ data.seo_collector_keywords }}</td>
+        {% if data.phrase %}
+        <td>{{ data.phrase }}</td>
         {% else %}
         <td>Нет</td>
         {% endif %}
