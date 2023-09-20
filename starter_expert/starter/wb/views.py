@@ -59,7 +59,6 @@ class SeoPhrasesView(ListView):
         file_form = Upload_excel_file(request.POST, request.FILES)
         phrase = request.POST.get('add_phrase')
         if file_form.is_valid():
-            SeoCollectorPhrase.objects.all().delete()
             file_operator = utils.FileOperator()
             phrases = file_operator.iterate_excel_file(request.FILES['file'].file)
             for phrase in phrases:
@@ -118,7 +117,6 @@ class SeoPhraseAddProduct(ListView):
             file_operator = utils.FileOperator()
             nmids = file_operator.iterate_excel_file(request.FILES['file'].file)
             for nmid in nmids:
-                print(nmid, type(nmid))
                 tasks.set_product_standard.delay(nmid, int(phrase))
 
         if add_nmid:

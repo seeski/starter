@@ -80,7 +80,6 @@ def create_indexer_reports_task():
 @shared_task
 def create_phrase(phrase):
     seo_collector = utils.SeoCollector(phrase=phrase)
-    print(phrase)
     seo_collector.run()
 
 @shared_task
