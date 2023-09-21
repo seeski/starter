@@ -484,7 +484,7 @@ class DataCollector:
                 product = resp.get('data').get('products')[0]
                 name = product.get('name')
                 brand = product.get('brand')
-                return ' '.join([name, brand])
+                return [name, brand]
 
             except Exception as e:
                 print(f'error at get_brand_and_name {detail_url}, {type(e).__name__} :: {e}')

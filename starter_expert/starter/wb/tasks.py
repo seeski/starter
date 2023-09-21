@@ -44,18 +44,19 @@ async def create_nmid_to_report(nmid):
     dataCollector = utils.DataCollector()
 
     detail_url = urlOperator.create_nmid_detail_url(nmid)
-    name = await dataCollector.get_brand_and_name(detail_url)
-    return [name, nmid_url]
+    name, brand = await dataCollector.get_brand_and_name(detail_url)
+    return [name, brand, nmid_url]
 
 
 @shared_task
 def create_nmid_to_report_task(nmid):
-    name, nmid_url = async_to_sync(create_nmid_to_report)(nmid)
+    name, brand, nmid_url = async_to_sync(create_nmid_to_report)(nmid)
 
     try:
         models.NmidToBeReported.objects.create(
             nmid=nmid,
             name=name,
+            brand=brand,
             url=nmid_url,
         )
 
