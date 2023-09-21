@@ -6,7 +6,7 @@ class RequestAdmin(admin.ModelAdmin):
     list_display = ('keywords', 'frequency', 'normalized_keywords')
 
 class NmidAdmin(admin.ModelAdmin):
-    list_display = ('nmid', 'name', 'url', 'phrase')
+    list_display = ('nmid', 'name', 'brand','url', 'phrase')
 
 class IndexerReportAdmin(admin.ModelAdmin):
     list_display = ('nmid', 'date', 'ready')

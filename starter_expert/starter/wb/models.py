@@ -7,6 +7,7 @@ class NmidToBeReported(models.Model):
 
     nmid = models.IntegerField(null=False, unique=True)
     name = models.CharField(max_length=255)
+    brand = models.CharField(max_length=255, default='')
     url = models.URLField()
     phrase = models.ForeignKey('SeoCollectorPhrase', blank=True, null=True, on_delete=models.SET_NULL, default=None)
     class Meta:

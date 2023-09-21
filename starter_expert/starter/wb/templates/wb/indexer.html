@@ -44,6 +44,7 @@
     <tr>
         <th scope="col">NMID</th>
         <th scope="col">Название</th>
+        <th scope="col">Бренд</th>
         <th scope="col">Ссылка</th>
         <th scope="col">Запрос</th>
     </tr>
@@ -53,6 +54,7 @@
     <tr>
         <td><a href="{% url 'wb_product_reports_data' nmid=data.nmid %}" class="table-link">{{ data.nmid }}</a></td>
         <td>{{ data.name  }}</td>
+        <td>{{ data.brand }}</td>
         <td><a href="{{ data.url }}" class="table-link">Подробнее</a></td>
         {% if data.phrase %}
         <td>{{ data.phrase }}</td>

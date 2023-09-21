@@ -85,7 +85,7 @@ class SeoPhrasesDetailView(ListView):
 
     def post(self, request, phrase):
         standards = request.POST.getlist('standards')
-
+        context = self.get_context_data()
         for query in context['queries']:
             if str(query.id) in standards:
                 print('true')
