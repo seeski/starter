@@ -140,7 +140,7 @@ class FileOperator:
 
     # создает файл с отчетом по определенному товару
     # выгружает данные в xlsx формате
-    def create_report_buffer(self, report_id):
+    def create_indexer_report_buffer(self, report_id):
 
         # инициализируем все нужные инструменты
         buffer = io.BytesIO()
@@ -174,6 +174,36 @@ class FileOperator:
         book.close()
         buffer.seek(0)
         return buffer
+
+    def create_seo_report_buffer(self, phrase_id):
+        buffer = io.BytesIO()
+        book = xlsxwriter.Workbook(buffer)
+        sheet = book.add_worksheet()
+
+        columns = [
+            'Ключевые слова', "Частотность", "Глубина", "Категория"
+        ]
+
+        for i in range(len(columns)):
+            sheet.write(0, i, columns[i])
+        phrase_obj = models.SeoCollectorPhrase.objects.all().filter(id=phrase_id).first()
+        data = models.SeoCollectorPhraseData.objects.all().filter(phrase=phrase_obj, standard=True)
+        print(len(data))
+        row_counter = 1
+
+        for query in data:
+
+            sheet.write(row_counter, 0, query.query)
+            sheet.write(row_counter, 1, query.frequency)
+            sheet.write(row_counter, 2, query.depth)
+            sheet.write(row_counter, 3, query.priority_cat)
+            row_counter += 1
+
+        book.close()
+        buffer.seek(0)
+        return buffer
+
+
 
 
 
@@ -805,9 +835,12 @@ class Indexer:
     def iterate_resulted_queries_seo(self):
         for query in self.resulted_queries:
             keywords = query.keywords
+            depth = async_to_sync(self.get_req_depth)(keywords)
             top_category = async_to_sync(self.get_top_category)(keywords)
             yield {
-                'keywords': keywords, 'top_category': top_category
+                'keywords': keywords, 'top_category': top_category,
+                'frequency': query.frequency, 'depth': depth
+
             }
 
 class SeoCollector:
@@ -844,7 +877,8 @@ class SeoCollector:
                             standard = False
                         models.SeoCollectorPhraseData.objects.create(
                             query=keywords, priority_cat=query.get('top_category'),
-                            phrase=phrase_obj, standard=standard
+                            phrase=phrase_obj, standard=standard,
+                            depth=query.get('depth'), frequency=query.get('frequency')
                         )
                     seen.add(keywords)
 

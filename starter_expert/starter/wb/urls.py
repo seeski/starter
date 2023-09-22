@@ -9,4 +9,5 @@ urlpatterns = [
     path('seo-phrases', views.SeoPhrasesView.as_view(), name='wb_seo_phrases'),
     path('seo-phrases/<int:phrase>', views.SeoPhrasesDetailView.as_view(), name='wb_seo_phrases_detail'),
     path('seo-phrases/<int:phrase>/add-product', views.SeoPhraseAddProduct.as_view(), name='wb_seo_add_product'),
+    path('seo-phrases/<int:phrase>/download', views.download_seo_report, name='wb_download_seo_phrase')
 ]

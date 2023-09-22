@@ -7,6 +7,7 @@ from .forms import *
 from asgiref.sync import async_to_sync
 from django.db.models import Avg, Q
 import asyncio
+from django.http import FileResponse
 
 # Create your views here.
 
@@ -88,18 +89,16 @@ class SeoPhrasesDetailView(ListView):
         context = self.get_context_data()
         for query in context['queries']:
             if str(query.id) in standards:
-                print('true')
                 query.standard = True
                 query.save()
             else:
-                print('false')
                 query.standard = False
                 query.save()
         return render(request, self.template_name, self.get_context_data())
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['queries'] = self.model.objects.all().filter(phrase=self.kwargs.get('phrase')).order_by('-standard')
+        context['queries'] = self.model.objects.all().filter(phrase=self.kwargs.get('phrase')).order_by('-standard', 'priority_cat', 'query')
         context['phrases'] = SeoCollectorPhrase.objects.all().filter(id=self.kwargs.get('phrase'))
         return context
 
@@ -164,3 +163,11 @@ def supplies_detail(request, cabinet):
         supplies = asyncio.run(data_collector.get_supplies(cabinet.token, cabinet.name))
         context['cabinets'][cabinet.name] = supplies
     return render(request, 'wb/supplies_detail.html', context=context)
+
+
+def download_seo_report(request, phrase):
+    file_operator = utils.FileOperator()
+    buffer = file_operator.create_seo_report_buffer(phrase_id=phrase)
+    phrase_obj = SeoCollectorPhrase.objects.all().get(id=phrase)
+
+    return FileResponse(buffer, as_attachment=True, filename=f'фразы "{phrase_obj.phrase}".xlsx')

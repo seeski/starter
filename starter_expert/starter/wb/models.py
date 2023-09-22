@@ -104,6 +104,8 @@ class SeoCollectorPhraseData(models.Model):
     query = models.CharField(max_length=255)
     priority_cat = models.CharField(max_length=255)
     standard = models.BooleanField(default=False)
+    frequency = models.IntegerField(null=True, default=None)
+    depth = models.IntegerField(null=True, default=None)
     phrase = models.ForeignKey(SeoCollectorPhrase, null=False, on_delete=models.CASCADE)
 
     class Meta:

@@ -22,7 +22,7 @@ class SeoPhrasesAdmin(admin.ModelAdmin):
     list_display = ('phrase', 'priority_cat', 'req_depth')
 
 class SeoPhraseDataAdmin(admin.ModelAdmin):
-    list_display = ('query', 'priority_cat', 'standard', 'phrase')
+    list_display = ('query', 'priority_cat', 'frequency', 'depth', 'standard', 'phrase')
 
 admin.site.register(Request, RequestAdmin)
 admin.site.register(NmidToBeReported, NmidAdmin)

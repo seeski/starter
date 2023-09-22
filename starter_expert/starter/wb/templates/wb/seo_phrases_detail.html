@@ -19,10 +19,13 @@
     <form action="{% url 'wb_seo_phrases_detail' phrase=phrase.id %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <input type="submit" value="загрузить" class="submit-btn">
+        <a href="{% url 'wb_download_seo_phrase' phrase=phrase.id %}" class="download-phrase-btn">&#8595;</a>
     <table>
     <thead>
     <tr>
         <th scope="col">Ключевые слова</th>
+        <th scope="col">Частотность</th>
+        <th scope="col">Глубина</th>
         <th scope="col">Категория</th>
         <th scope="col">Эталон</th>
     </tr>
@@ -31,6 +34,8 @@
     {% for query in queries %}
     <tr>
         <td>{{ query.query }}</td>
+        <td>{{ query.frequency }}
+        <td>{{ query.depth }}</td>
         <td>{{ query.priority_cat }}</td>
         {% if query.standard %}
             <td>
