@@ -676,7 +676,6 @@ class Indexer:
         self.nmid = nmid
 
     async def get_standard(self):
-
         pass
     async def search_common(self, requests_data):
 
@@ -685,6 +684,7 @@ class Indexer:
 
         card_info = await self.data_collector.get_card_info(card_url)
         detail_info = await self.data_collector.get_brand_and_name(detail_card_url)
+        detail_info = ' '.join(detail_info)
         full_info = ' '.join([card_info, detail_info])
 
         self.data_operator = DataOperator(self.nmid, full_info)
