@@ -24,7 +24,7 @@ class NmidToBeReported(models.Model):
 class IndexerReport(models.Model):
 
     nmid = models.IntegerField(null=False)
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateField(auto_now_add=True)
     ready = models.BooleanField(default=False)
 
     class Meta:

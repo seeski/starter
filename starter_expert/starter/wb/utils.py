@@ -29,6 +29,7 @@ def normalize_text(text: str) -> str:
 
 # записывает все данные по каждому отчету в IndexerReportData
 def createReportData(report_id, nmid):
+    print(f'createReportData func {nmid}')
     report = models.IndexerReport.objects.get(id=report_id)
     nmid_obj = models.NmidToBeReported.objects.all().filter(nmid=nmid)[0]
     indexer = Indexer(nmid)
@@ -410,8 +411,9 @@ class DataCollector:
                     resp = await client.get(query_url, timeout=None)
                     resp = resp.json()
                     products = resp.get('data').get('products')
-                    print(len('products'))
+                    print(len('products'), 'ids\n\n\n\n\n')
                     if not products:
+                        print(len(ids), 'ids\n\n\n\n\n')
                         return ids
 
                     for product in products:
@@ -423,6 +425,7 @@ class DataCollector:
                     time.sleep(20)
                     print(f'error at get_query {query_url} {e}')
 
+            print(len(ids), 'ids\n\n\n\n\n')
             return ids
 
     # возвращает все рекламные nmid товаров
@@ -674,8 +677,14 @@ class DataOperator:
 
 
     def check_existence(self, brand_ids):
-        return True if self.nmid in brand_ids else False
-
+        for brand_id in brand_ids:
+            print(f' // {brand_id} :: {self.nmid} -- ')
+        if self.nmid in brand_ids:
+            print('true\n\n\n\n\n')
+            return True
+        else:
+            print('false\n\n\n\n\n')
+            return False
 
     def check_first_ten_pages(self, ids):
         if self.nmid in ids:
@@ -704,6 +713,7 @@ class Indexer:
 
     def __init__(self, nmid=None):
         self.nmid = nmid
+        print(f'indexer initialization {self.nmid}')
 
     async def get_standard(self):
         pass
@@ -734,6 +744,7 @@ class Indexer:
         brand_id = await self.__get_brand_id()
         query_by_brand_url = self.url_operator.create_filtered_by_brand_url(query=query, brand_id=brand_id)
         brand_products = await self.data_collector.get_query_by_brand(query_by_brand_url)
+        self.data_operator.nmid = str(self.nmid)
         existence = self.data_operator.check_existence(brand_products)
         return existence
 
@@ -868,6 +879,7 @@ class SeoCollector:
             for product in products:
                 indexer = Indexer(product)
                 async_to_sync(indexer.search_common)(self.requests_data)
+
                 for query in indexer.iterate_resulted_queries_seo():
                     keywords = query.get('keywords')
                     if not keywords in seen:

@@ -3,7 +3,7 @@ from . import utils
 from django.contrib.auth.models import User
 from asgiref.sync import async_to_sync
 from . import models
-import time
+from datetime import date
 
 
 # каждые выходные обновляет файл с миллионом запросов
@@ -70,12 +70,17 @@ def create_indexer_report(report_id, nmid):
 @shared_task
 def create_indexer_reports_task():
     nmids = models.NmidToBeReported.objects.all()
-
+    today = date.today()
     for nmid in nmids:
-        report = models.IndexerReport.objects.create(
-            nmid=nmid.nmid
-        )
-        create_indexer_report.delay(report.id, report.nmid)
+        report = models.IndexerReport.objects.all().filter(nmid=nmid.nmid, date=today).first()
+        if not report:
+            print('new report')
+            new_report = models.IndexerReport.objects.create(
+                nmid=nmid.nmid
+            )
+            print(f'create_indexer_reports_task {new_report.nmid}')
+            create_indexer_report.delay(new_report.id, new_report.nmid)
+
 
 
 @shared_task
