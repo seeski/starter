@@ -404,6 +404,7 @@ class DataCollector:
         counter = 1
         ids = []
         query_url = query_url.replace('replace_me', str(counter))
+        print(f'\n\n\n\n[warning] !!! query_url -- "{query_url}" -- \n\n\n\n')
 
         async with AsyncClient() as client:
             while counter <= 10:
@@ -411,9 +412,8 @@ class DataCollector:
                     resp = await client.get(query_url, timeout=None)
                     resp = resp.json()
                     products = resp.get('data').get('products')
-                    print(len('products'), 'ids\n\n\n\n\n')
                     if not products:
-                        print(len(ids), 'ids\n\n\n\n\n')
+                        print(f'{ids.count("")} считаем пустые nmid')
                         return ids
 
                     for product in products:
@@ -425,7 +425,7 @@ class DataCollector:
                     time.sleep(20)
                     print(f'error at get_query {query_url} {e}')
 
-            print(len(ids), 'ids\n\n\n\n\n')
+            print(f'{ids.count("")} считаем пустые nmid')
             return ids
 
     # возвращает все рекламные nmid товаров

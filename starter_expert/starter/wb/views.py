@@ -146,7 +146,7 @@ def nmid_view(request, nmid):
     context = {}
     requests_list = list(data['keywords'] for data in IndexerReportData.objects.all().filter(product_id=nmid).values('keywords').distinct())
     requests = dict([(i,[]) for i in requests_list])
-    reports = IndexerReport.objects.all().filter(nmid=nmid, ready=True)
+    reports = IndexerReport.objects.all().filter(nmid=nmid, ready=True).order_by('-date')
     context_operator = utils.NmidContextOperator(requests, reports)
     context['reports'] = reports
     context['requests'] = context_operator.requests
