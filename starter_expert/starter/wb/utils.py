@@ -413,7 +413,6 @@ class DataCollector:
                     resp = resp.json()
                     products = resp.get('data').get('products')
                     if not products:
-                        print(f'{ids.count("")} считаем пустые nmid')
                         return ids
 
                     for product in products:
@@ -425,7 +424,6 @@ class DataCollector:
                     time.sleep(20)
                     print(f'error at get_query {query_url} {e}')
 
-            print(f'{ids.count("")} считаем пустые nmid')
             return ids
 
     # возвращает все рекламные nmid товаров
@@ -677,13 +675,9 @@ class DataOperator:
 
 
     def check_existence(self, brand_ids):
-        for brand_id in brand_ids:
-            print(f' // {brand_id} :: {self.nmid} -- ')
         if self.nmid in brand_ids:
-            print('true\n\n\n\n\n')
             return True
         else:
-            print('false\n\n\n\n\n')
             return False
 
     def check_first_ten_pages(self, ids):
