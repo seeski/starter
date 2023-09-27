@@ -409,6 +409,7 @@ class DataCollector:
         async with AsyncClient() as client:
             while counter <= 10:
                 try:
+                    query_url = query_url.replace(f'page={counter-1}', f'page={counter}')
                     resp = await client.get(query_url, timeout=None)
                     resp = resp.json()
                     products = resp.get('data').get('products')
@@ -683,6 +684,7 @@ class DataOperator:
     def check_first_ten_pages(self, ids):
         if self.nmid in ids:
             return ids.index(self.nmid) + 1
+
         return 1001
 
 
