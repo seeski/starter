@@ -144,13 +144,16 @@ class SuppliesView(ListView):
 def nmid_view(request, nmid):
     nmid_obj = NmidToBeReported.objects.all().get(nmid=nmid)
     context = {}
-    requests_list = list(data['keywords'] for data in IndexerReportData.objects.all().filter(product_id=nmid).values('keywords').distinct())
-    requests = dict([(i,[]) for i in requests_list])
+    data = IndexerReportData.objects.all().filter(product_id=nmid).distinct()
+    requests = dict([(i.keywords, {'data': [], 'cat': i.priority_cat, 'req_depth': i.req_depth, 'frequency': i.frequency}) for i in data])
+    print(requests, 'requests!!!!')
     reports = IndexerReport.objects.all().filter(nmid=nmid, ready=True).order_by('-date')
     context_operator = utils.NmidContextOperator(requests, reports)
     context['reports'] = reports
     context['requests'] = context_operator.requests
     context['product'] = nmid_obj
+    # for zapros in context['requests']:
+    #     print(zapros, context['requests'][zapros])
 
     return render(request, 'wb/nmid.html', context)
 

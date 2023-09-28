@@ -54,7 +54,6 @@ def createReportData(report_id, nmid):
     #         )
     #
     # else:
-        print('phrase data collecting started')
         standard_queries = models.SeoCollectorPhraseData.objects.all().filter(phrase=phrase, standard=True)
         for query in indexer.iterate_standard_queries(standard_queries):
             models.IndexerReportData.objects.create(
@@ -88,9 +87,9 @@ class NmidContextOperator:
         for request in self.requests:
             if request in report_data:
                 row_data = report_data[request]
-                self.requests[request].append({'place': row_data.place, 'req_depth': row_data.req_depth})
+                self.requests[request]['data'].append({'place': row_data.place, 'req_depth': row_data.req_depth})
             else:
-                self.requests[request].append({'place': None, 'req_depth': None})
+                self.requests[request]['data'].append({'place': None, 'req_depth': None})
 
 
 
@@ -810,7 +809,7 @@ class Indexer:
     def iterate_standard_queries(self, standard_queries):
         for query in standard_queries:
             keywords = query.query
-            frequency = None
+            frequency = query.frequency
             top_category =  async_to_sync(self.get_top_category)(keywords)
             req_depth =  async_to_sync(self.get_req_depth)(keywords)
             existence =  async_to_sync(self.__get_existence)(keywords)

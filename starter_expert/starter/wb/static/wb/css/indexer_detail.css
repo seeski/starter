@@ -45,3 +45,8 @@ a {
 a:hover {
     color: rgb(13,38,230);
 }
+
+.numeration {
+    font-size: 15px;
+    font-weight: normal;
+}
