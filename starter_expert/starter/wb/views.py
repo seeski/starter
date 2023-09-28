@@ -8,6 +8,7 @@ from asgiref.sync import async_to_sync
 from django.db.models import Avg, Q
 import asyncio
 from django.http import FileResponse
+from datetime import datetime
 
 # Create your views here.
 
@@ -144,7 +145,7 @@ class SuppliesView(ListView):
 def nmid_view(request, nmid):
     nmid_obj = NmidToBeReported.objects.all().get(nmid=nmid)
     context = {}
-    data = IndexerReportData.objects.all().filter(product_id=nmid).distinct()
+    data = IndexerReportData.objects.all().filter(product_id=nmid).order_by('-date').distinct()
     requests = dict([(i.keywords, {'data': [], 'cat': i.priority_cat, 'req_depth': i.req_depth, 'frequency': i.frequency}) for i in data])
     print(requests, 'requests!!!!')
     reports = IndexerReport.objects.all().filter(nmid=nmid, ready=True).order_by('-date')

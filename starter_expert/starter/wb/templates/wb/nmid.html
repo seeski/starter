@@ -16,9 +16,9 @@
         <tr class="columns">
             <th rowspan="2" colspan="1" scope="col" class="headcol"></th>
             <th rowspan="2" colspan="1" scope="col" class="headcol">Ключевая фраза</th>
+            <th rowspan="2" colspan="1" scope="col" class="headcol">Частотность</th>
             <th rowspan="2" colspan="1" scope="col" class="headcol">Категория</th>
             <th rowspan="2" colspan="1" scope="col" class="headcol">Глубина</th>
-            <th rowspan="2" colspan="1" scope="col" class="headcol">Частотность</th>
             {% for report in reports %}
             <th colspan="2" rowspan="1" scope="col" class="long">{{ report.date|date:'d.m' }}</th>
             {% endfor %}
@@ -35,9 +35,9 @@
     <tr class="tbl-row">
         <th class="headcol numeration">{{ requests|get_dict_key_place:request }}</th>
         <th class="headcol">{{ request }}</th>
+        <th>{{ requests|get_dict_frequency:request }}</th>
         <th>{{ requests|get_dict_cat:request }}</th>
         <th>{{ requests|get_dict_req_depth:request }}</th>
-        <th>{{ requests|get_dict_frequency:request }}</th>
 
         {% for report_info in requests|get_dict_data:request %}
         {% if report_info.req_depth %}

@@ -57,6 +57,7 @@ class IndexerReportData(models.Model):
     ad_place = models.IntegerField(null=True, default=None)
     report = models.ForeignKey(IndexerReport, null=False, on_delete=models.CASCADE)
     product_id = models.IntegerField()
+    date = models.DateField(auto_now_add=True, null=True)
 
     class Meta:
         verbose_name_plural = 'Данные по отчетам'

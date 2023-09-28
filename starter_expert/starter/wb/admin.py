@@ -13,7 +13,7 @@ class IndexerReportAdmin(admin.ModelAdmin):
 
 class IndexerReportDataAdmin(admin.ModelAdmin):
     list_display = ('keywords', 'priority_cat', 'frequency', 'req_depth', 'existence', 'place',
-                    'spot_req_depth', 'ad_spots', 'ad_place', 'report', 'product_id')
+                    'spot_req_depth', 'ad_spots', 'ad_place', 'report', 'product_id', 'date')
 
 class CabinetAdmin(admin.ModelAdmin):
     list_display = ('name', 'token')
