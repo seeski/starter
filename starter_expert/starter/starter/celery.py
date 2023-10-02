@@ -24,7 +24,7 @@ app.conf.beat_schedule = {
 
     'indexer-daily-report-wb': {
         'task': 'wb.tasks.create_indexer_reports_task',
-        'schedule': crontab(minute=46)
+        'schedule': crontab(minute=30),
     },
     'indexer-daily-report-ozon': {
         'task': 'ozon.tasks.create_indexer_reports_task',

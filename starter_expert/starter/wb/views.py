@@ -140,6 +140,33 @@ class SuppliesView(ListView):
     model = Cabinet
     context_object_name = 'cabinets'
 
+class QuickIndexationView(ListView):
+    template_name = 'wb/quick_indexation.html'
+    model = IndexerReport
+    context_object_name = 'reports'
+    paginate_by = 50
+    object_list = []
+
+
+    def post(self, request):
+        add_nmid_value = utils.check_int(request.POST.get('add_nmid'))
+        if add_nmid_value:
+            tasks.create_quick_report.delay(add_nmid_value)
+
+        return render(request, self.template_name, self.get_context_data())
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['reports'] = self.model.objects.all().filter(quick_indexation=True)
+        return context
+
+
+
+class QuickIndexationDetailView(ListView):
+
+    template_name = 'wb/quick_indexation_detail.html'
+
+
 
 
 def nmid_view(request, nmid):
@@ -175,3 +202,5 @@ def download_seo_report(request, phrase):
     phrase_obj = SeoCollectorPhrase.objects.all().get(id=phrase)
 
     return FileResponse(buffer, as_attachment=True, filename=f'фразы "{phrase_obj.phrase}".xlsx')
+
+

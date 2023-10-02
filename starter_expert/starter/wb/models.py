@@ -25,7 +25,9 @@ class IndexerReport(models.Model):
 
     nmid = models.IntegerField(null=False)
     date = models.DateField(auto_now_add=True)
+    quick_indexation = models.BooleanField(default=False)
     ready = models.BooleanField(default=False)
+    date_of_readiness = models.DateTimeField(null=True, default=None)
 
     class Meta:
         verbose_name_plural = "Индексатор, Отчеты"

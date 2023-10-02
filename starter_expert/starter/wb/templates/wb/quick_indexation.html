@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Проверка индексации</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'wb/css/indexer.css' %}">
+</head>
+<body>
+<div class="topic">
+    <div class="nav-wrap">
+        <p><a href="{% url 'logout' %}">Выйти</a></p>
+        <p><a href="{% url 'staff_home' %}">Кабинет</a></p>
+    </div>
+        <form action="{% url 'wb_indexer' %}" method="post" enctype="multipart/form-data" class="nmid-form">
+        {% csrf_token %}
+        <h3 class="form-title">Поиск</h3>
+        <label class="input-file">
+            <input type="text" name="search" placeholder="Найти NMID" class="one-nmid-form">
+            <input type="submit" value="&#8594;" class="search-btn">
+        </label>
+    </form>
+    <form action="{% url 'wb_indexer' %}" method="post" enctype="multipart/form-data" class="nmid-form">
+        {% csrf_token %}
+        <h3 class="form-title">Добавить NMID</h3>
+        <label class="input-file">
+            <input type="text" name="add_nmid" placeholder="Введите NMID" class="one-nmid-form">
+            <input type="submit" value="загрузить" class="submit-btn">
+        </label>
+    </form>
+    <form method="post" enctype="multipart/form-data" action="{% url 'wb_indexer' %}" class="nmid-form">
+        {% csrf_token %}
+        <h3 class="form-title">Добавить NMID'и</h3>
+        <label class="input-file">
+            <input type="file" name="file">
+            <span class="input-file-btn">Выберите файл</span>
+            <input type="submit" value="загрузить" class="submit-btn">
+        </label>
+    </form>
+</div>
+<h1 class="table-title">Отчеты</h1>
+<table>
+    <thead>
+    <tr>
+        <th scope="col">NMID</th>
+        <th scope="col">Дата</th>
+        <th scope="col">Скачать</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for report in reports %}
+    <tr>
+        <td><a href="{% url 'wb_quick_indexation_detail' report=report.id %}" class="table-link">{{ report.nmid }}</a></td>
+        <td>{{ report.date }}</td>
+        <td></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>
