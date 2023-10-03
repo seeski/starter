@@ -7,6 +7,7 @@ class RequestAdmin(admin.ModelAdmin):
 
 class NmidAdmin(admin.ModelAdmin):
     list_display = ('nmid', 'name', 'brand','url', 'phrase')
+    ordering = ['name']
 
 class IndexerReportAdmin(admin.ModelAdmin):
     list_display = ('nmid', 'date', 'ready')
