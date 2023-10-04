@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Отчет по nmid</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'wb/css/seo_phrases_detail.css' %}">
+</head>
+<body>
+<h1>Разовый отчет по {{ report.nmid }}</h1>
+<h2><a href="{% url 'wb_download_report' report=report.id %}">Скачать</a></h2>
+<table>
+    <thead>
+    <tr>
+        <th scope="col">Ключевая фраза</th>
+        <th scope="col">Место</th>
+        <th scope="col">Акция</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for keyword in data %}
+    <tr>
+        <td>{{ keyword.keywords }}</td>
+        {% if keyword.place > 1000 %}
+        <td>+</td>
+        {% elif keyword.place %}
+        <td>{{ keyword.place }}</td>
+        {% else %}
+        <td></td>
+        {% endif %}
+        <td></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>

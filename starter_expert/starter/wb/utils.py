@@ -26,6 +26,32 @@ def normalize_text(text: str) -> str:
 
     return ' '.join(normalized_words)
 
+def create_quick_indexation_report(report_id, nmid):
+
+    report = models.IndexerReport.objects.get(id=report_id)
+    indexer = Indexer(nmid)
+    requests_data = list(models.Request.objects.all())
+    async_to_sync(indexer.search_common)(requests_data)
+    for query in indexer.iterate_resulted_queries():
+        models.IndexerReportData.objects.create(
+            priority_cat=query.get('top_category'),
+            keywords=query.get('keywords'),
+            frequency=query.get('frequency'),
+            req_depth=query.get('req_depth'),
+            existence=query.get('existence'),
+            place=query.get('place'),
+            spot_req_depth=query.get('spot_req_depth'),
+            ad_place=query.get('ad_place'),
+            report=report,
+            product_id=nmid
+        )
+
+    report.ready = True
+    now = datetime.now()
+    report.time_of_readiness = now
+    report.save()
+
+
 
 # записывает все данные по каждому отчету в IndexerReportData
 def createReportData(report_id, nmid):
@@ -157,7 +183,8 @@ class FileOperator:
             sheet.write(0, i, columns[i])
 
         # собираем данные из бд, итерируем, заносим в лист
-        data = models.IndexerReportsData.objects.filter(report_id=report_id)
+        report = models.IndexerReport.objects.all().filter(id=report_id).first()
+        data = models.IndexerReportData.objects.all().filter(report=report)
         row_counter = 1
         for query in data:
             sheet.write(row_counter, 0, query.priority_cat)
@@ -594,7 +621,7 @@ class DataCollector:
             resp = resp.json()
             enc_data = resp['data']['file']
             data = base64.b64decode(enc_data).decode('utf-8')
-            queriesAsStrs = data.split('\n')[:30000]
+            queriesAsStrs = data.split('\n')[:10000]
 
             # проходимся по каждой строчке, предварительно сплитили по переносу
             # роспаковываем на запрос и частоту

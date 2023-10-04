@@ -151,13 +151,13 @@ class QuickIndexationView(ListView):
     def post(self, request):
         add_nmid_value = utils.check_int(request.POST.get('add_nmid'))
         if add_nmid_value:
-            tasks.create_quick_report.delay(add_nmid_value)
+            tasks.create_quick_report_task.delay(add_nmid_value)
 
         return render(request, self.template_name, self.get_context_data())
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['reports'] = self.model.objects.all().filter(quick_indexation=True)
+        context['reports'] = self.model.objects.all().filter(quick_indexation=True).order_by('-date')
         return context
 
 
@@ -165,8 +165,16 @@ class QuickIndexationView(ListView):
 class QuickIndexationDetailView(ListView):
 
     template_name = 'wb/quick_indexation_detail.html'
+    model = IndexerReportData
+    paginate_by = 50
+    object_list = []
 
-
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        report = IndexerReport.objects.all().filter(id=self.kwargs.get('report')).first()
+        context['report'] = report
+        context['data'] = self.model.objects.all().filter(report=report).order_by('place', 'keywords')
+        return context
 
 
 def nmid_view(request, nmid):
@@ -180,8 +188,7 @@ def nmid_view(request, nmid):
     context['reports'] = reports
     context['requests'] = context_operator.requests
     context['product'] = nmid_obj
-    # for zapros in context['requests']:
-    #     print(zapros, context['requests'][zapros])
+
 
     return render(request, 'wb/nmid.html', context)
 
@@ -203,4 +210,10 @@ def download_seo_report(request, phrase):
 
     return FileResponse(buffer, as_attachment=True, filename=f'фразы "{phrase_obj.phrase}".xlsx')
 
+def download_quick_indexation_report(request, report):
+    file_operator = utils.FileOperator()
+    buffer = file_operator.create_indexer_report_buffer(report_id=report)
+    report_obj = IndexerReport.objects.all().get(id=report)
+
+    return FileResponse(buffer, as_attachment=True, filename=f'проверка индексации {report_obj.nmid}.xlsx')
 

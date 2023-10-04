@@ -12,4 +12,5 @@ urlpatterns = [
     path('seo-phrases/<int:phrase>/download', views.download_seo_report, name='wb_download_seo_phrase'),
     path('quick-indexation', views.QuickIndexationView.as_view(), name='wb_quick_indexation'),
     path('quick-indexation/<int:report>', views.QuickIndexationDetailView.as_view(), name='wb_quick_indexation_detail'),
+    path('quick-indexation/<int:report>/download', views.download_quick_indexation_report, name='wb_download_report'),
 ]

@@ -74,7 +74,6 @@ def create_indexer_reports_task():
     for nmid in nmids:
 
         report = models.IndexerReport.objects.all().filter(nmid=nmid.nmid, date=today).first()
-        print(report)
         if not report:
             print('new report')
             new_report = models.IndexerReport.objects.create(
@@ -99,3 +98,18 @@ def set_product_standard(nmid, phrase):
         product_obj.save()
     except Exception as e:
         print(f'error at set_product_standard_task: {type(e).__name__} -- {e}')
+
+
+@shared_task
+def create_quick_report_task(nmid):
+    today = date.today()
+    report = models.IndexerReport.objects.create(
+        nmid=nmid,
+        quick_indexation=True
+    )
+    utils.create_quick_indexation_report(report.id, report.nmid)
+
+# @shared_task
+# def delete_useless_quick_indexation_report():
+#     today = date.today()
+

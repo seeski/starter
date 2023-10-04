@@ -12,7 +12,7 @@
         <p><a href="{% url 'logout' %}">Выйти</a></p>
         <p><a href="{% url 'staff_home' %}">Кабинет</a></p>
     </div>
-        <form action="{% url 'wb_indexer' %}" method="post" enctype="multipart/form-data" class="nmid-form">
+        <form action="{% url 'wb_quick_indexation' %}" method="post" enctype="multipart/form-data" class="nmid-form">
         {% csrf_token %}
         <h3 class="form-title">Поиск</h3>
         <label class="input-file">
@@ -20,7 +20,7 @@
             <input type="submit" value="&#8594;" class="search-btn">
         </label>
     </form>
-    <form action="{% url 'wb_indexer' %}" method="post" enctype="multipart/form-data" class="nmid-form">
+    <form action="{% url 'wb_quick_indexation' %}" method="post" enctype="multipart/form-data" class="nmid-form">
         {% csrf_token %}
         <h3 class="form-title">Добавить NMID</h3>
         <label class="input-file">
@@ -28,7 +28,7 @@
             <input type="submit" value="загрузить" class="submit-btn">
         </label>
     </form>
-    <form method="post" enctype="multipart/form-data" action="{% url 'wb_indexer' %}" class="nmid-form">
+    <form method="post" enctype="multipart/form-data" action="{% url 'wb_quick_indexation' %}" class="nmid-form">
         {% csrf_token %}
         <h3 class="form-title">Добавить NMID'и</h3>
         <label class="input-file">
@@ -52,7 +52,11 @@
     <tr>
         <td><a href="{% url 'wb_quick_indexation_detail' report=report.id %}" class="table-link">{{ report.nmid }}</a></td>
         <td>{{ report.date }}</td>
+        {% if report.ready %}
+        <td><a href="{% url 'wb_download_report' report=report.id %}">&#8595;</a></td>
+        {% else %}
         <td></td>
+        {% endif %}
     </tr>
     {% endfor %}
     </tbody>

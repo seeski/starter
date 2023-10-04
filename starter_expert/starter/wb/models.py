@@ -62,8 +62,8 @@ class IndexerReportData(models.Model):
     date = models.DateField(auto_now_add=True, null=True)
 
     class Meta:
-        verbose_name_plural = 'Данные по отчетам'
-        verbose_name = 'Данные по отчету'
+        verbose_name_plural = 'Данные по отчетам Индексация'
+        verbose_name = 'Данные по отчету Индексация'
 
 
 class Request(models.Model):
@@ -112,5 +112,5 @@ class SeoCollectorPhraseData(models.Model):
     phrase = models.ForeignKey(SeoCollectorPhrase, null=False, on_delete=models.CASCADE)
 
     class Meta:
-        verbose_name = 'Данные по отчету'
-        verbose_name_plural = 'Данные по отчету'
+        verbose_name = 'Данные по отчету Сео'
+        verbose_name_plural = 'Данные по отчетам Сео'
