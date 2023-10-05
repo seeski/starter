@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Проверка индексации</title>
     {% load static %}
+    {% load wb_indexer %}
     <link rel="stylesheet" href="{% static 'wb/css/indexer.css' %}">
 </head>
 <body>
@@ -42,6 +43,7 @@
 <table>
     <thead>
     <tr>
+        <th scope="col"></th>
         <th scope="col">NMID</th>
         <th scope="col">Дата</th>
         <th scope="col">Скачать</th>
@@ -50,6 +52,7 @@
     <tbody>
     {% for report in reports %}
     <tr>
+        <td>{{ reports|get_dict_key_place:report }}</td>
         <td><a href="{% url 'wb_quick_indexation_detail' report=report.id %}" class="table-link">{{ report.nmid }}</a></td>
         <td>{{ report.date }}</td>
         {% if report.ready %}

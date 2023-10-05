@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Сео</title>
+    {% load wb_indexer %}
     {% load static %}
     <link rel="stylesheet" href="{% static 'wb/css/indexer.css' %}">
 </head>
@@ -33,6 +34,7 @@
 <table>
 <thead>
 <tr>
+    <th scope="col"></th>
     <th scope="col">Запрос</th>
     <th scope="col">Категория</th>
     <th scope="col">Выдача</th>
@@ -42,6 +44,7 @@
 <tbody>
 {% for phrase_obj in phrases %}
 <tr>
+    <td>{{ phrases|get_dict_key_place:phrase_obj }}</td>
     <td><a href="{% url 'wb_seo_phrases_detail' phrase=phrase_obj.id %}">{{ phrase_obj.phrase }}</a></td>
     <td>{{ phrase_obj.priority_cat }}</td>
     <td>{{ phrase_obj.req_depth }}</td>

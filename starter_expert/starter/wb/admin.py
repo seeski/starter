@@ -10,7 +10,7 @@ class NmidAdmin(admin.ModelAdmin):
     ordering = ['name']
 
 class IndexerReportAdmin(admin.ModelAdmin):
-    list_display = ('nmid', 'date', 'ready')
+    list_display = ('nmid', 'date', 'ready', 'quick_indexation')
 
 class IndexerReportDataAdmin(admin.ModelAdmin):
     list_display = ('keywords', 'priority_cat', 'frequency', 'req_depth', 'existence', 'place',

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Отчет по nmid</title>
+    {% load wb_indexer %}
     {% load static %}
     <link rel="stylesheet" href="{% static 'wb/css/seo_phrases_detail.css' %}">
 </head>
@@ -12,6 +13,7 @@
 <table>
     <thead>
     <tr>
+        <th scope="col"></th>
         <th scope="col">Ключевая фраза</th>
         <th scope="col">Место</th>
         <th scope="col">Акция</th>
@@ -20,6 +22,7 @@
     <tbody>
     {% for keyword in data %}
     <tr>
+        <td>{{ data|get_dict_key_place:keyword }}</td>
         <td>{{ keyword.keywords }}</td>
         {% if keyword.place > 1000 %}
         <td>+</td>

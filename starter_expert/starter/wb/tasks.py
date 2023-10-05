@@ -1,9 +1,10 @@
+import datetime
 from celery import shared_task
 from . import utils
 from django.contrib.auth.models import User
 from asgiref.sync import async_to_sync
 from . import models
-from datetime import date
+from datetime import date, timezone
 
 
 # каждые выходные обновляет файл с миллионом запросов
@@ -108,6 +109,22 @@ def create_quick_report_task(nmid):
         quick_indexation=True
     )
     utils.create_quick_indexation_report(report.id, report.nmid)
+
+# @shared_task
+# def clean_quick_indexation_task():
+#     now = datetime.datetime.now()
+#     one_day_delta = datetime.timedelta(days=1)
+#
+#     print(now, one_day_delta)
+#
+#     reports = models.IndexerReport.objects.all().filter(quick_indexation=True)
+#     for report in reports:
+#         try:
+#
+#             report.date_of_readiness = now
+#             report.save()
+#         except Exception as e:
+#             print(f'{type(e).__name__} :: {e}')
 
 # @shared_task
 # def delete_useless_quick_indexation_report():
