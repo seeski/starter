@@ -82,6 +82,7 @@ class Cabinet(models.Model):
 
     name = models.CharField(max_length=255)
     token = models.TextField()
+    useless_field = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Кабинет'
