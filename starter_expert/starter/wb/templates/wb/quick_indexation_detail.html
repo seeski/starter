@@ -15,6 +15,9 @@
     <tr>
         <th scope="col"></th>
         <th scope="col">Ключевая фраза</th>
+        <th scope="col">частотность</th>
+        <th scope="col">Глубина</th>
+        <th scope="col">Категория</th>
         <th scope="col">Место</th>
         <th scope="col">Акция</th>
     </tr>
@@ -24,6 +27,9 @@
     <tr>
         <td>{{ data|get_dict_key_place:keyword }}</td>
         <td>{{ keyword.keywords }}</td>
+        <td>{{ keyword.frequency }}</td>
+        <td>{{ keyword.req_depth }}</td>
+        <td>{{ keyword.priority_cat }}</td>
         {% if keyword.place > 1000 %}
         <td>+</td>
         {% elif keyword.place %}

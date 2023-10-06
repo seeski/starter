@@ -104,9 +104,11 @@ def set_product_standard(nmid, phrase):
 @shared_task
 def create_quick_report_task(nmid):
     today = date.today()
+    product_info = async_to_sync(create_nmid_to_report)(nmid)
     report = models.IndexerReport.objects.create(
         nmid=nmid,
-        quick_indexation=True
+        quick_indexation=True,
+        product_name=product_info[0]
     )
     utils.create_quick_indexation_report(report.id, report.nmid)
 
