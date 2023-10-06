@@ -24,7 +24,7 @@ class NmidToBeReported(models.Model):
 class IndexerReport(models.Model):
 
     nmid = models.IntegerField(null=False)
-    product_name = models.CharField(max_length=255, default='')
+    # product_name = models.CharField(max_length=255, default='')
     date = models.DateField(auto_now_add=True)
     quick_indexation = models.BooleanField(default=False)
     ready = models.BooleanField(default=False)
