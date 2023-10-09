@@ -158,6 +158,7 @@ class QuickIndexationView(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['reports'] = self.model.objects.all().filter(quick_indexation=True).order_by('-date')
+
         return context
 
 

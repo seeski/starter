@@ -25,7 +25,7 @@ class IndexerReport(models.Model):
 
     nmid = models.IntegerField(null=False)
     date = models.DateField(auto_now_add=True)
-    product_name = models.CharField(max_length=255, null=True, default=None)
+    some_field = models.IntegerField(default=0)
     quick_indexation = models.BooleanField(default=False)
     ready = models.BooleanField(default=False)
     date_of_readiness = models.DateTimeField(null=True, default=None)
@@ -33,6 +33,12 @@ class IndexerReport(models.Model):
     class Meta:
         verbose_name_plural = "Индексатор, Отчеты"
         verbose_name = 'Отчет по индексатору'
+
+
+# class QuickIndexerReportName(models.Model):
+#
+#     name = models.CharField(max_length=255)
+#     report = models.ForeignKey(IndexerReport, null=False, on_delete=models.CASCADE)
 
 
 #  хранит собранные данные по каждому отчету

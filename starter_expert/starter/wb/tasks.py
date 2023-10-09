@@ -107,9 +107,12 @@ def create_quick_report_task(nmid):
     product_info = async_to_sync(create_nmid_to_report)(nmid)
     report = models.IndexerReport.objects.create(
         nmid=nmid,
-        quick_indexation=True,
-        product_name=product_info[0]
+        quick_indexation=True
     )
+    # report_name = models.QuickIndexerReportName.objects.create(
+    #     name=product_info[0],
+    #     report=report
+    # )
     utils.create_quick_indexation_report(report.id, report.nmid)
 
 # @shared_task
