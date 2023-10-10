@@ -735,7 +735,6 @@ class Indexer:
 
     def __init__(self, nmid=None):
         self.nmid = nmid
-        print(f'indexer initialization {self.nmid}')
 
     async def get_standard(self):
         pass

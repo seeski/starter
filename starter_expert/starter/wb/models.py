@@ -25,7 +25,7 @@ class IndexerReport(models.Model):
 
     nmid = models.IntegerField(null=False)
     date = models.DateField(auto_now_add=True)
-    # some_field = models.IntegerField(default=0)
+    name = models.CharField(max_length=255, default='')
     quick_indexation = models.BooleanField(default=False)
     ready = models.BooleanField(default=False)
     date_of_readiness = models.DateTimeField(null=True, default=None)

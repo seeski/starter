@@ -28,7 +28,6 @@ def load_and_normalize_request(request_data: dict):
     )
 
 # запускает обновление топ миллиона запросов
-
 @shared_task
 def update_requests_task():
     models.Request.objects.all().delete()
@@ -107,12 +106,10 @@ def create_quick_report_task(nmid):
     product_info = async_to_sync(create_nmid_to_report)(nmid)
     report = models.IndexerReport.objects.create(
         nmid=nmid,
-        quick_indexation=True
+        quick_indexation=True,
+        name=product_info[0]
     )
-    # report_name = models.QuickIndexerReportName.objects.create(
-    #     name=product_info[0],
-    #     report=report
-    # )
+
     utils.create_quick_indexation_report(report.id, report.nmid)
 
 # @shared_task

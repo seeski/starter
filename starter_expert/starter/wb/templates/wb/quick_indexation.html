@@ -55,7 +55,7 @@
     <tr>
         <td>{{ reports|get_dict_key_place:report }}</td>
         <td><a href="{% url 'wb_quick_indexation_detail' report=report.id %}" class="table-link">{{ report.nmid }}</a></td>
-<!--        <td>{{ report.product_name }}</td>-->
+        <td>{{ report.name }}</td>
         <td>{{ report.date }}</td>
         {% if report.ready %}
         <td><a href="{% url 'wb_download_report' report=report.id %}">&#8595;</a></td>
