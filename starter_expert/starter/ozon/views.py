@@ -24,7 +24,7 @@ class IndexerLoginRequiredMixin(LoginRequiredMixin):
     redirect_field_name = "/account/cabinet/"
 
 
-class IndexerView(IndexerLoginRequiredMixin, ListView):
+class IndexerView(ListView):
     template_name = 'ozon/indexer.html'
 
     paginate_by = 100
@@ -70,11 +70,11 @@ class LogoutUser(LogoutView):
 
 
 """
-class CreateNmidToBeReported(IndexerLoginRequiredMixin, FormView):
+class CreateNmidToBeReported(FormView):
     pass
 
 
-class DetailView(IndexerLoginRequiredMixin, TemplateView):
+class DetailView(TemplateView):
 
     template_name = "ozon/detail.html"
 
