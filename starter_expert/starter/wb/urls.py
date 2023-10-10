@@ -13,4 +13,6 @@ urlpatterns = [
     path('quick-indexation', views.QuickIndexationView.as_view(), name='wb_quick_indexation'),
     path('quick-indexation/<int:report>', views.QuickIndexationDetailView.as_view(), name='wb_quick_indexation_detail'),
     path('quick-indexation/<int:report>/download', views.download_quick_indexation_report, name='wb_download_report'),
+    path('phrases/', views.AllPhrasesView.as_view(), name='wb_phrases'),
+    path('download_phrases/', views.download_phrases_table, name='wb_download_phrases'),
 ]

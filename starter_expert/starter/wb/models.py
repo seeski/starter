@@ -122,3 +122,20 @@ class SeoCollectorPhraseData(models.Model):
     class Meta:
         verbose_name = 'Данные по отчету Сео'
         verbose_name_plural = 'Данные по отчетам Сео'
+
+
+class Phrase(models.Model):
+
+    phrase = models.CharField(max_length=255, unique=True)
+    date = models.DateTimeField(auto_now_add=True)
+    req_depth = models.IntegerField()
+    frequency = models.IntegerField(null=True, default=None)   
+    priority_cat = models.CharField(max_length=255, default='')
+    ready = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.phrase
+
+    class Meta:
+        verbose_name = 'Статистика топовой фразы'
+        verbose_name_plural = 'Статистика топовых фраз'

@@ -132,3 +132,53 @@ def create_quick_report_task(nmid):
 # def delete_useless_quick_indexation_report():
 #     today = date.today()
 
+
+################# SCRAPER PHRASES ################################
+class SkipException(Exception):
+    pass
+
+
+@shared_task
+def start_scraping_all_phrases():
+    """Старт парсинга топовых категорий и глубины запросов"""
+    length = Request.objects.count()
+    # temp - максимальное количество очередей задач
+    temp = 20
+    for i in range(0, temp):
+        scraping_phrase.delay(
+            start_range=round((i * length) / temp), 
+            end_range=round(((i + 1) * length) / temp),
+            )
+
+
+@shared_task
+def scraping_phrase(start_range, end_range):
+    requests = Request.objects.all()[start_range:end_range]
+    scraper = utils.ScraperPhrases
+    scraper.initializate_subject_base()
+
+    for request in requests:
+        try:
+            keywords = request.keywords
+            frequency = request.frequency
+            priority_cat, req_depth = scraper.scraping_phrase(keywords)
+            if priority_cat is None:
+                priority_cat = ''
+
+            try:
+                phrase = Phrase.objects.get(phrase=keywords)
+                Phrase.objects.filter(phrase=keywords).update(
+                    priority_cat=priority_cat, 
+                    req_depth=req_depth,
+                    frequency=frequency
+                )
+            except Phrase.DoesNotExist:
+                Phrase.objects.create(
+                    phrase=keywords,
+                    priority_cat=priority_cat,
+                    req_depth=req_depth,
+                    frequency=frequency,
+                    ready=True
+                )
+        except SkipException:
+            pass

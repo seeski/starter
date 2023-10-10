@@ -123,4 +123,20 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'Данные по отчетам Индексация',
             },
         ),
+        migrations.CreateModel(
+            name='Phrase',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('phrase', models.CharField(max_length=255, unique=True)),
+                ('date', models.DateTimeField(auto_now_add=True)),
+                ('req_depth', models.IntegerField()),
+                ('frequency', models.IntegerField(default=None, null=True)),
+                ('priority_cat', models.CharField(default='', max_length=255)),
+                ('ready', models.BooleanField(default=False)),
+            ],
+            options={
+                'verbose_name': 'Статистика топовой фразы',
+                'verbose_name_plural': 'Статистика топовых фраз',
+            },
+        ),
     ]

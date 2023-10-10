@@ -917,3 +917,67 @@ class SeoCollector:
 
             phrase_obj.ready = True
             phrase_obj.save()
+
+
+#################### SCRAPER PHRASES #####################
+class ScraperPhrases:
+    scraper = DataCollector()
+    url_operator = URLOperator()
+    data_operator = DataOperator()
+
+    @classmethod
+    def initializate_subject_base(cls):
+        subject_base_url = cls.url_operator.subject_base_url
+        cls.subject_base = async_to_sync(cls.scraper.get_subject_base)(subject_base_url)
+
+    @classmethod
+    def scraping_phrase(cls, phrase):
+        ad_info_url = cls.url_operator.create_ad_url(phrase)
+        top_category_id = async_to_sync(cls.scraper.get_top_category)(ad_info_url)
+        top_category = cls.data_operator.check_top_category(top_category_id, cls.subject_base)
+        req_depth = async_to_sync(cls.scraper.get_req_depth)(cls.url_operator.create_query_req_depth_url(phrase))
+        return top_category, req_depth
+
+
+def get_filter_and_sorted_context(request):
+    sorted_context = []
+    filter_context = {}
+    sorted_by = request.GET.get("sorted_by")
+    category = request.GET.get("category")
+    search_text = request.GET.get("search")
+    
+    if sorted_by is not None:
+        sorted_context.extend(sorted_by.replace(" ", "").split(','))
+
+    if category is not None:
+        filter_context['priority_cat'] = category
+
+    if search_text is not None:
+        filter_context['phrase__icontains'] = search_text
+
+    return sorted_context, filter_context
+
+
+def create_xlsx_table(queryset):
+    buffer = io.BytesIO()
+    book = xlsxwriter.Workbook(buffer)
+    sheet = book.add_worksheet()
+
+    columns = [
+        'Ключевые слова', "Частотность", "Глубина", "Категория"
+    ]
+
+    for col_counter, column in enumerate(columns):
+        sheet.write(0, col_counter, column)
+
+    sheet.set_column(1, 3, 25)
+    sheet.set_column(0, 0, 100)
+    for row_counter, phrase in enumerate(queryset, start=1):
+        sheet.write(row_counter, 0, phrase.phrase)
+        sheet.write(row_counter, 1, phrase.frequency)
+        sheet.write(row_counter, 2, phrase.req_depth)
+        sheet.write(row_counter, 3, phrase.priority_cat)
+
+    book.close()
+    buffer.seek(0)
+    return buffer

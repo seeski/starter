@@ -218,3 +218,36 @@ def download_quick_indexation_report(request, report):
 
     return FileResponse(buffer, as_attachment=True, filename=f'проверка индексации {report_obj.nmid}.xlsx')
 
+
+######################## PHRASES VIEW ################################
+
+class AllPhrasesView(ListView):
+
+    model = Phrase
+    template_name = 'wb/all_phrases.html'
+    context_object_name = 'phrases'
+    paginate_by = 500
+
+    def get_queryset(self):
+        sorted_context, filter_context = utils.get_filter_and_sorted_context(self.request)
+        return self.model.objects.filter(**filter_context).order_by(*sorted_context)
+
+    def get_context_data(self):
+        context = super().get_context_data()
+        get_queries = []
+        for key in self.request.GET.keys():
+            if key != "page":
+                get_queries.append("%s=%s" % (key, self.request.GET.get(key)))
+
+        url = "&".join(get_queries)
+        search = self.request.GET.get('search')
+        context['url'] = url
+        context['search'] = search
+        return context
+
+def download_phrases_table(request):
+    sorted_context, filter_context = utils.get_filter_and_sorted_context(request)
+
+    queryset = Phrase.objects.filter(**filter_context).order_by(*sorted_context)
+    buffer = utils.create_xlsx_table(queryset)
+    return FileResponse(buffer, as_attachment=True, filename="wildberries статистика фраз.xlsx")
