@@ -944,7 +944,8 @@ def get_filter_and_sorted_context(request):
     filter_context = {}
     sorted_by = request.GET.get("sorted_by")
     category = request.GET.get("category")
-    search_text = request.GET.get("search")
+    search_phrase = request.GET.get("search_phrase")
+    search_category = request.GET.get("search_category")
     
     if sorted_by is not None:
         sorted_context.extend(sorted_by.replace(" ", "").split(','))
@@ -952,9 +953,12 @@ def get_filter_and_sorted_context(request):
     if category is not None:
         filter_context['priority_cat'] = category
 
-    if search_text is not None:
-        filter_context['phrase__icontains'] = search_text
+    if search_phrase is not None:
+        filter_context['phrase__icontains'] = search_phrase
 
+    if search_category is not None:
+        filter_context['priority_cat__icontains'] = search_category
+        
     return sorted_context, filter_context
 
 

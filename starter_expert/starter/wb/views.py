@@ -226,7 +226,7 @@ class AllPhrasesView(ListView):
     model = Phrase
     template_name = 'wb/all_phrases.html'
     context_object_name = 'phrases'
-    paginate_by = 500
+    paginate_by = 1000
 
     def get_queryset(self):
         sorted_context, filter_context = utils.get_filter_and_sorted_context(self.request)
@@ -240,10 +240,14 @@ class AllPhrasesView(ListView):
                 get_queries.append("%s=%s" % (key, self.request.GET.get(key)))
 
         url = "&".join(get_queries)
-        search = self.request.GET.get('search')
+        search_phrase = self.request.GET.get('search_phrase')
+        search_category = self.request.GET.get('search_category')
         context['url'] = url
-        context['search'] = search
+        context['search_phrase'] = search_phrase
+        context['search_category'] = search_category
+        context['start_number'] = (context['page_obj'].number - 1) * self.paginate_by
         return context
+
 
 def download_phrases_table(request):
     sorted_context, filter_context = utils.get_filter_and_sorted_context(request)
