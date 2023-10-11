@@ -35,7 +35,7 @@ services:
       - db
       - redis
 
-    command: 'sh -c "cd src && python manage.py migrate && python manage.py collectstatic --no-input && gunicorn starter.wsgi:application --bind 0.0.0.0:8000"'
+    command: 'sh -c "cd src && python manage.py migrate --fake && python manage.py collectstatic --no-input && gunicorn starter.wsgi:application --bind 0.0.0.0:8000"'
 
   nginx:
     build:
