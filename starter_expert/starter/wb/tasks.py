@@ -79,7 +79,6 @@ def create_indexer_reports_task():
             new_report = models.IndexerReport.objects.create(
                 nmid=nmid.nmid
             )
-            print(f'create_indexer_reports_task {new_report.nmid}')
             create_indexer_report.delay(new_report.id, new_report.nmid)
 
 
@@ -112,21 +111,18 @@ def create_quick_report_task(nmid):
 
     utils.create_quick_indexation_report(report.id, report.nmid)
 
-# @shared_task
-# def clean_quick_indexation_task():
-#     now = datetime.datetime.now()
-#     one_day_delta = datetime.timedelta(days=1)
-#
-#     print(now, one_day_delta)
-#
-#     reports = models.IndexerReport.objects.all().filter(quick_indexation=True)
-#     for report in reports:
-#         try:
-#
-#             report.date_of_readiness = now
-#             report.save()
-#         except Exception as e:
-#             print(f'{type(e).__name__} :: {e}')
+@shared_task
+def clean_quick_indexation_task():
+    today = datetime.date.today()
+
+    reports = models.IndexerReport.objects.all().filter(quick_indexation=True)
+    for report in reports:
+        try:
+            report_date = report.date
+            if today != report_date:
+                report.delete()
+        except Exception as e:
+            print(f'{type(e).__name__} :: {e}')
 
 # @shared_task
 # def delete_useless_quick_indexation_report():

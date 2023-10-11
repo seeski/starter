@@ -55,7 +55,6 @@ def create_quick_indexation_report(report_id, nmid):
 
 # записывает все данные по каждому отчету в IndexerReportData
 def createReportData(report_id, nmid):
-    print(f'createReportData func {nmid}')
     report = models.IndexerReport.objects.get(id=report_id)
     nmid_obj = models.NmidToBeReported.objects.all().filter(nmid=nmid)[0]
     indexer = Indexer(nmid)

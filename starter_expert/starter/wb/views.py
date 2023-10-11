@@ -181,10 +181,9 @@ class QuickIndexationDetailView(ListView):
 def nmid_view(request, nmid):
     nmid_obj = NmidToBeReported.objects.all().get(nmid=nmid)
     context = {}
-    data = IndexerReportData.objects.all().filter(product_id=nmid).order_by('-date').distinct()
+    data = IndexerReportData.objects.all().filter(product_id=nmid).order_by('-date', 'frequency').distinct()
     requests = dict([(i.keywords, {'data': [], 'cat': i.priority_cat, 'req_depth': i.req_depth, 'frequency': i.frequency}) for i in data])
-    print(requests, 'requests!!!!')
-    reports = IndexerReport.objects.all().filter(nmid=nmid, ready=True).order_by('-date')
+    reports = IndexerReport.objects.all().filter(nmid=nmid, ready=True, quick_indexation=False).order_by('-date')
     context_operator = utils.NmidContextOperator(requests, reports)
     context['reports'] = reports
     context['requests'] = context_operator.requests
