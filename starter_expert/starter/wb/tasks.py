@@ -124,9 +124,18 @@ def clean_quick_indexation_task():
         except Exception as e:
             print(f'{type(e).__name__} :: {e}')
 
-# @shared_task
-# def delete_useless_quick_indexation_report():
-#     today = date.today()
+
+@shared_task
+def set_frequency():
+    keywords = models.Request.objects.all()
+    for phrase in keywords:
+        phrase_kw = phrase.keywords
+        no_frequency_report_data = models.IndexerReportData.objects.all().filter(keywords=phrase_kw, frequency=None)
+        for row in no_frequency_report_data:
+            row.frequency = phrase.frequency
+            row.save()
+
+
 
 
 ################# SCRAPER PHRASES ################################
