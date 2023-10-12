@@ -158,7 +158,7 @@ def start_scraping_all_phrases():
 
 @shared_task
 def scraping_phrase(start_range, end_range):
-    requests = Request.objects.all()[start_range:end_range]
+    requests = models.Request.objects.all()[start_range:end_range]
     scraper = utils.ScraperPhrases
     scraper.initializate_subject_base()
 
@@ -171,14 +171,14 @@ def scraping_phrase(start_range, end_range):
                 priority_cat = ''
 
             try:
-                phrase = Phrase.objects.get(phrase=keywords)
-                Phrase.objects.filter(phrase=keywords).update(
+                phrase = models.Phrase.objects.get(phrase=keywords)
+                models.Phrase.objects.filter(phrase=keywords).update(
                     priority_cat=priority_cat, 
                     req_depth=req_depth,
                     frequency=frequency
                 )
-            except Phrase.DoesNotExist:
-                Phrase.objects.create(
+            except models.Phrase.DoesNotExist:
+                models.Phrase.objects.create(
                     phrase=keywords,
                     priority_cat=priority_cat,
                     req_depth=req_depth,
