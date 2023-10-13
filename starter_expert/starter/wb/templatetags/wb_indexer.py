@@ -47,5 +47,7 @@ def get_last_day_el(dict, key):
             elif cur_date > last_frequency_day:
                 last_frequency_day = cur_date
                 ans = certain_date_info
-
-        return ans['frequency'] if ans['frequency'] else ''
+        if ans:
+            return ans['frequency']
+        else:
+            return ''
