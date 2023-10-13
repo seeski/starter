@@ -187,6 +187,8 @@ def nmid_view(request, nmid):
     context_operator = utils.NmidContextOperator(requests, reports)
     context['reports'] = reports
     context['requests'] = context_operator.requests
+    # for request in context['requests']:
+    #     print(context['requests'][request], '\n\n')
     context['product'] = nmid_obj
 
 

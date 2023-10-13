@@ -112,9 +112,15 @@ class NmidContextOperator:
         for request in self.requests:
             if request in report_data:
                 row_data = report_data[request]
-                self.requests[request]['data'].append({'place': row_data.place, 'req_depth': row_data.req_depth})
+                self.requests[request]['data'].append(
+                    {'place': row_data.place, 'req_depth': row_data.req_depth,
+                     'frequency': row_data.frequency, 'date': row_data.date.strftime("%m/%d/%y")}
+                )
             else:
-                self.requests[request]['data'].append({'place': None, 'req_depth': None})
+                self.requests[request]['data'].append(
+                    {'place': None, 'req_depth': None,
+                    'frequency': None, 'date': None}
+                )
 
 
 
