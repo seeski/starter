@@ -48,4 +48,4 @@ def get_last_day_el(dict, key):
                 last_frequency_day = cur_date
                 ans = certain_date_info
 
-        return ans['frequency']
+        return ans['frequency'] if ans['frequency'] else ''
