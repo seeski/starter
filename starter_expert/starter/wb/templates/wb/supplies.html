@@ -1,12 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
 <head>
     <meta charset="UTF-8">
     <title>Кабинеты</title>
+    <link rel="stylesheet" href="{% static 'wb/css/seo_phrases_detail.css' %}">
 </head>
 <body>
-{% for cabinet in cabinets %}
-<a href="{% url 'wb_supplies_detail' cabinet=cabinet.id %}">{{ cabinet.name }}</a>
-{% endfor %}
+<nav>
+    <a href="{% url 'staff_home' %}">Кабинет</a>
+    <a href="{% url 'wb_seo_phrases' %}">Фразы</a>
+    <a href="{% url 'wb_indexer' %}">NMID'и</a>
+</nav>
+<table>
+    <thead>
+    <tr>
+    	<th></th>
+        <th scope="col">Кабинет</th>
+        <th></th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for cabinet in cabinets %}
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        <td><a href="{% url 'wb_supplies_detail' cabinet=cabinet.id %}">{{ cabinet.name }}</a></td>
+    </tr>
+   	{% endfor %}
 </body>
 </html>
