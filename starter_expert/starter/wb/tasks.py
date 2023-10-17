@@ -125,23 +125,6 @@ def clean_quick_indexation_task():
             print(f'{type(e).__name__} :: {e}')
 
 
-@shared_task
-def clean_duplicate_reports():
-    seen_dates = set()
-    products = list(models.NmidToBeReported.objects.all())
-    products = products * 2
-    for product in products:
-        product_reports = models.IndexerReport.objects.all().filter(nmid=product.nmid, quick_indexation=False)
-        for report in product_reports:
-            if report.date in seen_dates:
-                report.delete()
-            else:
-                seen_dates.add(report.date)
-
-
-
-    print(seen_dates)
-
 
 @shared_task
 def set_frequency():
