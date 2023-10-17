@@ -44,7 +44,6 @@ app.conf.beat_schedule['quick-indexation-daily-cleaning-wb'] =  {
     'schedule': crontab(hour=14, minute=0),
 }
 
-
 # Load task modules from all registered Django apps.
 app.autodiscover_tasks()
 

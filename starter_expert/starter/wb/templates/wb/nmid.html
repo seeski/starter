@@ -35,7 +35,7 @@
     <tr class="tbl-row">
         <th class="headcol numeration">{{ requests|get_dict_key_place:request }}</th>
         <th class="headcol">{{ request }}</th>
-        <th>{{ requests|get_last_day_el:request }}</th>
+        <th>{{ requests|get_dict_frequency:request }}</th>
         <th>{{ requests|get_dict_cat:request }}</th>
         <th>{{ requests|get_dict_req_depth:request }}</th>
 
