@@ -26,7 +26,7 @@ app.conf.beat_schedule['update-requests-file'] = {
 
 app.conf.beat_schedule['indexer-daily-report-wb'] = {
         'task': 'wb.tasks.create_indexer_reports_task',
-        'schedule': crontab(minute=0, hour=14),
+        'schedule': crontab(minute=40, hour=14),
     }
 
 # app.conf.beat_schedule['indexer-daily-report-ozon'] = {
@@ -41,7 +41,7 @@ app.conf.beat_schedule['scraping-phrases'] = {
 
 app.conf.beat_schedule['quick-indexation-daily-cleaning-wb'] =  {
     'task': 'wb.tasks.clean_quick_indexation_task',
-    'schedule': crontab(minute=28),
+    'schedule': crontab(hour=14, minute=0),
 }
 
 

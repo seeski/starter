@@ -126,6 +126,15 @@ def clean_quick_indexation_task():
 
 
 @shared_task
+def clean_useless_reports():
+    products = models.NmidToBeReported.objects.all()
+
+    for product in products:
+        print(product.nmid)
+
+
+
+@shared_task
 def set_frequency():
     keywords = models.Request.objects.all()
     for phrase in keywords:
