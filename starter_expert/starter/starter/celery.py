@@ -29,6 +29,10 @@ app.conf.beat_schedule['indexer-daily-report-wb'] = {
         'schedule': crontab(minute=40, hour=14),
     }
 
+app.conf.beat_schedule['clean_duplicates_reports'] = {
+    'task': 'wb.tasks.clean_duplicate_reports',
+    'schedule': crontab(hour=16, minute=5)
+}
 # app.conf.beat_schedule['indexer-daily-report-ozon'] = {
 #         'task': 'ozon.tasks.create_indexer_reports_task',
 #         'schedule': crontab(hour=18, minute=0),
