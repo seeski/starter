@@ -45,8 +45,8 @@ services:
       - static:/static
     ports:
       - "80:80"
-    depends_on:
-      - webapp
+#    depends_on:
+#      - webapp
 
 
   worker:
