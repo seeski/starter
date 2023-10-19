@@ -133,6 +133,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CELERY_BROKER_URL = 'redis://redis:6379'
 
+
+
 LOGIN_REDIRECT_URL = 'staff_home'
 
 CSRF_TRUSTED_ORIGINS = [
