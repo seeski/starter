@@ -194,6 +194,13 @@ def nmid_view(request, nmid):
 
     return render(request, 'wb/nmid.html', context)
 
+
+def delete_nmid_view(request, nmid):
+    product = NmidToBeReported.objects.get(nmid=nmid)
+    product.delete()
+    IndexerReport.objects.all().filter(nmid=nmid, quick_indexation=False).delete()
+    return redirect('wb_indexer')
+
 def supplies_detail(request, cabinet):
     data_collector = utils.DataCollector()
     context = {}

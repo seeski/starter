@@ -43,8 +43,9 @@
         {% if report_info.req_depth %}
         {% if not report_info.place %}
             <td></td>
-        {% elif report_info.place  and report_info.place != 1001 %}
+        {% elif report_info.place and report_info.place != 1001 %}
         <td>{{ report_info.place }}</td>
+
         {% else %}
         <td>+</td>
         {% endif %}
