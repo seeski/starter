@@ -21,12 +21,12 @@ app.conf.beat_schedule = {}
 
 app.conf.beat_schedule['update-requests-file'] = {
         'task': 'wb.tasks.update_requests_task',
-        'schedule': crontab(hour=17, minute=20, day_of_month=20),
+        'schedule': crontab(hour=10, minute=35, day_of_month=23),
     }
 
 app.conf.beat_schedule['indexer-daily-report-wb'] = {
         'task': 'wb.tasks.create_indexer_reports_task',
-        'schedule': crontab(minute=10, hour=10),
+        'schedule': crontab(minute=0, hour=13),
     }
 
 # app.conf.beat_schedule['indexer-daily-report-ozon'] = {
