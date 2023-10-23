@@ -41,7 +41,7 @@
 
         {% for report_info in requests|get_dict_data:request %}
         {% if report_info.req_depth %}
-        {% if not report_info.place or report_info.req_depth < 1000 and report_info.place == 1000 %}
+        {% if not report_info.place or report_info.req_depth < 1000 and report_info.place == 1001 %}
             <td></td>
         {% elif report_info.place and report_info.place != 1001 %}
         <td>{{ report_info.place }}</td>
