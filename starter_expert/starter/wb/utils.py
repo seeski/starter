@@ -40,6 +40,7 @@ def create_quick_indexation_report(report_id, nmid):
             req_depth=query.get('req_depth'),
             existence=query.get('existence'),
             place=query.get('place'),
+            prom=query.get('prom'),
             spot_req_depth=query.get('spot_req_depth'),
             ad_place=query.get('ad_place'),
             report=report,
@@ -683,11 +684,15 @@ class DataCollector:
 
 
     async def get_promotion(self, detail_url):
-        async with AsyncClient() as client:
-            resp = await client.get(detail_url, timeout=None)
-            resp = resp.json()
-            prom = resp.get('data').get('products')[0].get('promoTextCat')
-            return prom
+        try:
+            async with AsyncClient() as client:
+                resp = await client.get(detail_url, timeout=None)
+                resp = resp.json()
+                prom = resp.get('data').get('products')[0].get('promoTextCat')
+                return prom
+        except Exception as e:
+            print(f'{type(e).__name__} :: {e} handled during get_promotion')
+            return None
 
 
 class DataOperator:
@@ -815,6 +820,11 @@ class Indexer:
             most_category = await self.data_collector.get_most_category(query_category_url)
             return most_category
 
+    async def get_prom(self):
+        detail_url = self.url_operator.create_nmid_detail_url(self.nmid)
+        prom = self.data_collector.get_promotion(detail_url)
+        return prom
+
 
     def iterate_resulted_queries(self):
         for query in self.resulted_queries:
@@ -829,6 +839,7 @@ class Indexer:
                 ad_spots = ad_info.get('ad_spots')
                 ad_place = ad_info.get('ad_place')
                 place =  async_to_sync(self.__get_place)(keywords)
+                prom = async_to_sync(self.get_prom)()
 
                 if req_depth != 0:
                     if not place:
@@ -836,14 +847,14 @@ class Indexer:
                     percent = (place / req_depth) * 100
                     spot_req_depth = str(round(percent, 2)).replace('.', ';')
             else:
-                ad_spots, ad_place, place, spot_req_depth = [None] * 4
+                ad_spots, ad_place, place, spot_req_depth, prom = [None] * 5
 
             yield {
                 'nmid': self.nmid, 'top_category': top_category,
                 'keywords': keywords, 'frequency': frequency,
                 'req_depth': req_depth, 'existence': existence,
                 'place': place, 'spot_req_depth': spot_req_depth,
-                'ad_spots': ad_spots, 'ad_place': ad_place
+                'ad_spots': ad_spots, 'ad_place': ad_place, 'prom': prom
             }
 
     def iterate_standard_queries(self, standard_queries):
@@ -859,6 +870,7 @@ class Indexer:
                 ad_spots = ad_info.get('ad_spots')
                 ad_place = ad_info.get('ad_place')
                 place =  async_to_sync(self.__get_place)(keywords)
+                prom = async_to_sync(self.get_prom)()
 
                 if req_depth != 0:
                     if not place:
@@ -866,14 +878,14 @@ class Indexer:
                     percent = (place / req_depth) * 100
                     spot_req_depth = str(round(percent, 2)).replace('.', ';')
             else:
-                ad_spots, ad_place, place, spot_req_depth = [None] * 4
+                ad_spots, ad_place, place, spot_req_depth, prom = [None] * 5
 
             yield {
                 'nmid': self.nmid, 'top_category': top_category,
                 'keywords': keywords, 'frequency': frequency,
                 'req_depth': req_depth, 'existence': existence,
                 'place': place, 'spot_req_depth': spot_req_depth,
-                'ad_spots': ad_spots, 'ad_place': ad_place
+                'ad_spots': ad_spots, 'ad_place': ad_place, 'prom': prom
             }
 
 
