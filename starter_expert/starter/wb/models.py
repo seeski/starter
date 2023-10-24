@@ -61,6 +61,7 @@ class IndexerReportData(models.Model):
     req_depth = models.IntegerField()
     existence = models.BooleanField()
     place = models.IntegerField(null=True, default=None)
+    prom = models.CharField(null=True, default=None)
     spot_req_depth = models.CharField(null=True, default=None, max_length=255)
     ad_spots = models.IntegerField(null=True, default=None)
     ad_place = models.IntegerField(null=True, default=None)

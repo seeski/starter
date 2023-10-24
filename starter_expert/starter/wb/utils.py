@@ -276,6 +276,7 @@ class URLOperator:
     any_query_req_depth_url_template = 'https://search.wb.ru/exactmatch/ru/common/v4/search?TestGroup=test_2&TestID=131&appType=1&curr=rub&dest=123586150&filters=xsubject&query={}&regions=80,38,4,64,83,33,68,70,69,30,86,40,1,66,110,22,31,48,71,114&resultset=filters&spp=0'
     nmid_detail_url_template = 'https://card.wb.ru/cards/detail?appType=1&curr=rub&dest=123586150&regions=80,38,4,64,83,33,68,70,69,30,86,40,1,66,110,22,31,48,71,114&spp=0&nm={}'
 
+
     card_url_template_ranges = {
         '01': (0, 143), '02': (144, 287), '03': (288, 431),
         '04': (432, 719), "05":(720, 1007), "06":(1008, 1061),
@@ -679,6 +680,14 @@ class DataCollector:
                 return nmids
             except Exception as e:
                 print(f'{type(e).__name__} :: {e} handled during get_first_ten_products')
+
+
+    async def get_promotion(self, detail_url):
+        async with AsyncClient() as client:
+            resp = await client.get(detail_url, timeout=None)
+            resp = resp.json()
+            prom = resp.get('data').get('products')[0].get('promoTextCat')
+            return prom
 
 
 class DataOperator:
