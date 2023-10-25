@@ -839,7 +839,7 @@ class Indexer:
                 ad_spots = ad_info.get('ad_spots')
                 ad_place = ad_info.get('ad_place')
                 place =  async_to_sync(self.__get_place)(keywords)
-                prom = async_to_sync(self.get_prom)()
+                # prom = async_to_sync(self.get_prom)()
 
                 if req_depth != 0:
                     if not place:
@@ -847,14 +847,14 @@ class Indexer:
                     percent = (place / req_depth) * 100
                     spot_req_depth = str(round(percent, 2)).replace('.', ';')
             else:
-                ad_spots, ad_place, place, spot_req_depth, prom = [None] * 5
+                ad_spots, ad_place, place, spot_req_depth = [None] * 4
 
             yield {
                 'nmid': self.nmid, 'top_category': top_category,
                 'keywords': keywords, 'frequency': frequency,
                 'req_depth': req_depth, 'existence': existence,
                 'place': place, 'spot_req_depth': spot_req_depth,
-                'ad_spots': ad_spots, 'ad_place': ad_place, 'prom': prom
+                'ad_spots': ad_spots, 'ad_place': ad_place
             }
 
     def iterate_standard_queries(self, standard_queries):
@@ -870,7 +870,6 @@ class Indexer:
                 ad_spots = ad_info.get('ad_spots')
                 ad_place = ad_info.get('ad_place')
                 place =  async_to_sync(self.__get_place)(keywords)
-                prom = async_to_sync(self.get_prom)()
 
                 if req_depth != 0:
                     if not place:
@@ -878,14 +877,14 @@ class Indexer:
                     percent = (place / req_depth) * 100
                     spot_req_depth = str(round(percent, 2)).replace('.', ';')
             else:
-                ad_spots, ad_place, place, spot_req_depth, prom = [None] * 5
+                ad_spots, ad_place, place, spot_req_depth = [None] * 4
 
             yield {
                 'nmid': self.nmid, 'top_category': top_category,
                 'keywords': keywords, 'frequency': frequency,
                 'req_depth': req_depth, 'existence': existence,
                 'place': place, 'spot_req_depth': spot_req_depth,
-                'ad_spots': ad_spots, 'ad_place': ad_place, 'prom': prom
+                'ad_spots': ad_spots, 'ad_place': ad_place
             }
 
 
