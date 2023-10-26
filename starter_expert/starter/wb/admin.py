@@ -13,7 +13,7 @@ class IndexerReportAdmin(admin.ModelAdmin):
     list_display = ('nmid', 'date', 'ready', 'quick_indexation')
 
 class IndexerReportDataAdmin(admin.ModelAdmin):
-    list_display = ('keywords', 'priority_cat', 'frequency', 'req_depth', 'existence', 'place', 'prom',
+    list_display = ('keywords', 'priority_cat', 'frequency', 'req_depth', 'existence', 'place', 'quick_indexation',
                     'spot_req_depth', 'ad_spots', 'ad_place', 'report', 'product_id', 'date')
 
 class CabinetAdmin(admin.ModelAdmin):

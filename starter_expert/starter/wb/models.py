@@ -66,6 +66,7 @@ class IndexerReportData(models.Model):
     ad_spots = models.IntegerField(null=True, default=None)
     ad_place = models.IntegerField(null=True, default=None)
     report = models.ForeignKey(IndexerReport, null=False, on_delete=models.CASCADE)
+    quick_indexation = models.BooleanField(default=False)
     product_id = models.IntegerField()
     date = models.DateField(auto_now_add=True, null=True)
 

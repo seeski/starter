@@ -44,7 +44,8 @@ def create_quick_indexation_report(report_id, nmid):
             spot_req_depth=query.get('spot_req_depth'),
             ad_place=query.get('ad_place'),
             report=report,
-            product_id=nmid
+            product_id=nmid,
+            quick_indexation=report.quick_indexation
         )
 
     report.ready = True
@@ -92,7 +93,7 @@ def createReportData(report_id, nmid):
                 spot_req_depth=query.get('spot_req_depth'),
                 ad_place=query.get('ad_place'),
                 report=report,
-                product_id=nmid
+                product_id=nmid, quick_indexation=report.quick_indexation
             )
 
     report.ready = True
