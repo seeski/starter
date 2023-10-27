@@ -430,8 +430,8 @@ class DataCollector:
                         counter += 1
 
                 except Exception as e:
-                    print(f'error at get_query_by_brand {query_by_brand_url} {e}')
-                    return set()
+                    print(f'error at get_query_by_brand {query_by_brand_url} -- {type(e).__name__} :: {e}')
+                    return ids
 
 
     # возвращает все nmid товаров с первых 10 (если есть) страниц
@@ -439,7 +439,6 @@ class DataCollector:
         counter = 1
         ids = []
         query_url = query_url.replace('replace_me', str(counter))
-        print(f'\n\n\n\n[warning] !!! query_url -- "{query_url}" -- \n\n\n\n')
 
         async with AsyncClient() as client:
             while counter <= 10:

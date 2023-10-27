@@ -75,7 +75,6 @@ def create_indexer_reports_task():
 
         report = models.IndexerReport.objects.all().filter(nmid=nmid.nmid, date=today).first()
         if not report:
-            print('new report')
             new_report = models.IndexerReport.objects.create(
                 nmid=nmid.nmid
             )
