@@ -25,10 +25,17 @@
                   <input type="submit" value="&#8594;" class="search-btn">
               </label>
             </div>
-            <div>
-              <h3 class="form-title">Поиск по категории</h3>
+            <div style="padding-right: 40px">
+              <h3 class="form-title">Поиск по т.категории</h3>
               <label class="input-file">
-                  <input type="text" name="search_category" placeholder="Поиск по фразе" value="{% if search_category %}{{ search_category }}{% endif %}" class="search-text">
+                  <input type="text" name="search_top_category" placeholder="Поиск по топ категории" value="{% if search_top_category %}{{ search_top_category }}{% endif %}" class="search-text">
+                  <input type="submit" value="&#8594;" class="search-btn">
+              </label>
+            </div>
+            <div style="padding-right: 40px">
+              <h3 class="form-title">Поиск по пр.категории</h3>
+              <label class="input-file">
+                  <input type="text" name="search_category" placeholder="Поиск по приоритетной категории" value="{% if search_category %}{{ search_category }}{% endif %}" class="search-text">
                   <input type="submit" value="&#8594;" class="search-btn">
               </label>
             </div>
@@ -46,6 +53,9 @@
         <th scope="col">Фраза <a style="color: white" href="{% url 'wb_phrases' %}?{{ url }}&sorted_by=phrase">↑ </a><a style="color: white" href="{% url 'wb_phrases' %}?{{ url }}&sorted_by=-phrase">↓ </a></th>
         <th scope="col">Выдача <a style="color: white" href="{% url 'wb_phrases' %}?{{ url }}&sorted_by=-req_depth">↑</a> <a style="color: white" href="{% url 'wb_phrases' %}?{{ url }}&sorted_by=req_depth">↓</a></th>
         <th scope="col">Частотность <a style="color: white" href="{% url 'wb_phrases' %}?{{ url }}&sorted_by=-frequency">↑</a> <a style="color: white" href="{% url 'wb_phrases' %}?{{ url }}&sorted_by=frequency">↓</a></th>
+        <th scope="col">Рекламная категория</th>
+        <th scope="col">Топ категория</th>
+        <th scope="col">Категория</th>
         <th scope="col">Категория</th>
     </tr>
     </thead>
@@ -57,6 +67,9 @@
         <td>{{ phrase.req_depth }}</td>
         <td>{{ phrase.frequency }}</td>
         <td><a style="font-size: 16px" href="{% url 'wb_phrases' %}?category={{ phrase.priority_cat }}">{% if phrase.priority_cat != "" %}{{ phrase.priority_cat }}{% else %}Нет{% endif %}</a></td>
+        <td><a style="font-size: 16px" href="{% url 'wb_phrases' %}?top_category={{ phrase.top_category }}">{% if phrase.top_category != "" %}{{ phrase.top_category }}{% else %}Нет{% endif %}</a></td>
+        <td><a style="font-size: 16px" href="{% url 'wb_phrases' %}?top_category={{ phrase.top_category }}">{% if phrase.second_top_category != "" %}{{ phrase.second_top_category }}{% else %}Нет{% endif %}</a></td>
+        <td><a style="font-size: 16px" href="{% url 'wb_phrases' %}?top_category={{ phrase.top_category }}">{% if phrase.third_top_category != "" %}{{ phrase.third_top_category }}{% else %}Нет{% endif %}</a></td>
     </tr>
     {% endfor %}
     </tbody>
