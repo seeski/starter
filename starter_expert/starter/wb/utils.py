@@ -318,9 +318,10 @@ class URLOperator:
     # здесь создается ссылка для сбора данных по продавцу
     # ссылка используется для определения существования товара по определенному запросу
     def create_filtered_by_brand_url(self, query, brand_id):
+        keywords = query.replace(' ', '%20')
         return self.filtered_by_brand_id_url_template.format(
             brand_id=brand_id,
-            query=query.strip()
+            query=keywords.strip()
         ).replace('replace_me', '1')
 
 
