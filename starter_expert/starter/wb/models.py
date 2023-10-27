@@ -112,6 +112,7 @@ class SeoCollectorPhrase(models.Model):
         verbose_name = 'Фраза'
         verbose_name_plural = 'Фразы'
 
+
 class SeoCollectorPhraseData(models.Model):
 
     query = models.CharField(max_length=255)
@@ -133,6 +134,10 @@ class Phrase(models.Model):
     req_depth = models.IntegerField()
     frequency = models.IntegerField(null=True, default=None)   
     priority_cat = models.CharField(max_length=255, default='')
+    top_category = models.CharField(max_length=255, default='')
+    second_top_category = models.CharField(max_length=255, default='')
+    third_top_category = models.CharField(max_length=255, default='')
+    updated_at = models.DateTimeField(auto_now=True)
     ready = models.BooleanField(default=False)
 
     def __str__(self):
@@ -141,3 +146,8 @@ class Phrase(models.Model):
     class Meta:
         verbose_name = 'Статистика топовой фразы'
         verbose_name_plural = 'Статистика топовых фраз'
+
+
+
+
+
