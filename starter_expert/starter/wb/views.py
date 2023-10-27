@@ -250,9 +250,11 @@ class AllPhrasesView(ListView):
         url = "&".join(get_queries)
         search_phrase = self.request.GET.get('search_phrase')
         search_category = self.request.GET.get('search_category')
+        search_top_category = self.request.GET.get('search_top_category')
         context['url'] = url
         context['search_phrase'] = search_phrase
         context['search_category'] = search_category
+        context['search_top_category'] = search_top_category
         context['start_number'] = (context['page_obj'].number - 1) * self.paginate_by
         return context
 

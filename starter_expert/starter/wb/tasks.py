@@ -63,9 +63,11 @@ def create_nmid_to_report_task(nmid):
     except Exception as e:
         print(e)
 
+
 @shared_task
 def create_indexer_report(report_id, nmid):
     utils.createReportData(report_id, nmid)
+
 
 @shared_task
 def create_indexer_reports_task():
@@ -79,7 +81,6 @@ def create_indexer_reports_task():
                 nmid=nmid.nmid
             )
             create_indexer_report.delay(new_report.id, new_report.nmid)
-
 
 
 @shared_task
@@ -124,7 +125,6 @@ def clean_quick_indexation_task():
             print(f'{type(e).__name__} :: {e}')
 
 
-
 @shared_task
 def set_frequency():
     keywords = models.Request.objects.all()
@@ -134,8 +134,6 @@ def set_frequency():
         for row in no_frequency_report_data:
             row.frequency = phrase.frequency
             row.save()
-
-
 
 
 ################# SCRAPER PHRASES ################################
@@ -166,19 +164,25 @@ def scraping_phrase(start_range, end_range):
         try:
             keywords = request.keywords
             frequency = request.frequency
-            priority_cat, req_depth = scraper.scraping_phrase(keywords)
+            priority_cat, req_depth, top_category, second_top_category, third_top_category = scraper.scraping_phrase(keywords)
             if priority_cat is None:
                 priority_cat = ''
 
             try:
                 phrase = models.Phrase.objects.get(phrase=keywords)
                 models.Phrase.objects.filter(phrase=keywords).update(
+                    second_top_category=second_top_category,
+                    third_top_category=third_top_category,
+                    top_category=top_category,
                     priority_cat=priority_cat, 
                     req_depth=req_depth,
                     frequency=frequency
                 )
             except models.Phrase.DoesNotExist:
                 models.Phrase.objects.create(
+                    second_top_category=second_top_category,
+                    third_top_category=third_top_category,
+                    top_category=top_category,
                     phrase=keywords,
                     priority_cat=priority_cat,
                     req_depth=req_depth,
@@ -187,3 +191,5 @@ def scraping_phrase(start_range, end_range):
                 )
         except SkipException:
             pass
+
+

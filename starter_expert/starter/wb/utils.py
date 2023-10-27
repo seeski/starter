@@ -946,6 +946,29 @@ class SeoCollector:
 
 
 #################### SCRAPER PHRASES #####################
+async def get_most_categories(self, phrase):
+    category = ''
+    count = 0
+    categories_url = 'https://search.wb.ru/exactmatch/ru/common/v4/search?TestGroup=test_2&TestID=131&' \
+                    'appType=1&curr=rub&dest=123586150&filters=xsubject&query={}&regions=80,38,4,64,83' \
+                    ',33,68,70,69,30,86,40,1,66,110,22,31,48,71,114&resultset=filters&spp=0'.format(phrase)
+    async with AsyncClient() as client:
+        try:
+            resp = await client.get(query_categories_url, timeout=None)
+            resp = resp.json()
+            categories = resp.get('data').get('filters').get('items')
+            categories.sort(key=lambda category: category.get('count') or 0)
+
+            while len(categories) < 3:
+                categories.append(None)
+
+            return list(map(lambda x: x.get['name'], categories))[:3]
+
+        except Exception as e:
+            print(f'error at  get_query_most_categories {phrase} {e}')
+            return [None, None, None]
+
+
 class ScraperPhrases:
     scraper = DataCollector()
     url_operator = URLOperator()
@@ -959,10 +982,12 @@ class ScraperPhrases:
     @classmethod
     def scraping_phrase(cls, phrase):
         ad_info_url = cls.url_operator.create_ad_url(phrase)
-        top_category_id = async_to_sync(cls.scraper.get_top_category)(ad_info_url)
-        top_category = cls.data_operator.check_top_category(top_category_id, cls.subject_base)
+        prior_category_id = async_to_sync(cls.scraper.get_top_category)(ad_info_url)
+        prior_catogory = cls.data_operator.check_top_category(prior_category_id, cls.subject_base)
         req_depth = async_to_sync(cls.scraper.get_req_depth)(cls.url_operator.create_query_req_depth_url(phrase))
-        return top_category, req_depth
+
+        top_category, second_top_category, third_top_category = async_to_sync(get_most_categories)(phrase)
+        return prior_catogory, req_depth, top_category, second_top_category, third_top_category
 
 
 def get_filter_and_sorted_context(request):
@@ -970,9 +995,11 @@ def get_filter_and_sorted_context(request):
     filter_context = {}
     sorted_by = request.GET.get("sorted_by")
     category = request.GET.get("category")
-    search_phrase = request.GET.get("search_phrase")
+    top_category = request.GET.get("top_category")
+    search_phrase = request.GET.get("search_phragse")
     search_category = request.GET.get("search_category")
-    
+    search_top_category = request.GET.get("search_top_category")
+
     if sorted_by is not None:
         sorted_context.extend(sorted_by.replace(" ", "").split(','))
 
@@ -984,7 +1011,13 @@ def get_filter_and_sorted_context(request):
 
     if search_category is not None:
         filter_context['priority_cat__icontains'] = search_category
-        
+
+    if search_top_category is not None:
+        filter_context['top_category__icontains'] = search_top_category
+
+    if top_category is not None:
+        filter_context['top_category'] = top_category
+
     return sorted_context, filter_context
 
 
@@ -994,7 +1027,8 @@ def create_xlsx_table(queryset):
     sheet = book.add_worksheet()
 
     columns = [
-        'Ключевые слова', "Частотность", "Глубина", "Категория"
+        'Ключевые слова', "Частотность", "Глубина", "Рекламная категория",
+        "Топовая категория", "Вторая категория", "Третья категория",
     ]
 
     for col_counter, column in enumerate(columns):
@@ -1002,11 +1036,16 @@ def create_xlsx_table(queryset):
 
     sheet.set_column(1, 3, 25)
     sheet.set_column(0, 0, 100)
+
     for row_counter, phrase in enumerate(queryset, start=1):
+        print(row_counter)
         sheet.write(row_counter, 0, phrase.phrase)
         sheet.write(row_counter, 1, phrase.frequency)
         sheet.write(row_counter, 2, phrase.req_depth)
         sheet.write(row_counter, 3, phrase.priority_cat)
+        sheet.write(row_counter, 4, phrase.top_category)
+        sheet.write(row_counter, 5, phrase.second_top_category)
+        sheet.write(row_counter, 6, phrase.third_top_category)
 
     book.close()
     buffer.seek(0)
