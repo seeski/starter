@@ -233,7 +233,7 @@ class AllPhrasesView(ListView):
 
     def get_queryset(self):
         sorted_context, filter_context = utils.get_filter_and_sorted_context(self.request)
-        return self.model.objects.filter(**filter_context).order_by(*sorted_context)
+        return self.model.objects.filter(**filter_context).order_by(*sorted_context, '-updated_at')
 
     def get_context_data(self):
         context = super().get_context_data()

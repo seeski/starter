@@ -996,7 +996,7 @@ def get_filter_and_sorted_context(request):
     sorted_by = request.GET.get("sorted_by")
     category = request.GET.get("category")
     top_category = request.GET.get("top_category")
-    search_phrase = request.GET.get("search_phragse")
+    search_phrase = request.GET.get("search_phrase")
     search_category = request.GET.get("search_category")
     search_top_category = request.GET.get("search_top_category")
 

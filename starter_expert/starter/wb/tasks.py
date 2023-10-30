@@ -144,15 +144,13 @@ class SkipException(Exception):
     pass
 
 
-file = open('requests.csv', 'rt')
-reader = list(csv.reader(file))
-random.shuffle(reader)
-file.close()
-
-
 @shared_task
 def start_scraping_all_phrases():
     """Старт парсинга топовых категорий и глубины запросов"""
+    file = open('requests.csv', 'rt')
+    reader = list(csv.reader(file))
+    random.shuffle(reader)
+    file.close()
     length = len(reader)
     # temp - максимальное количество очередей задач
     temp = 20
@@ -165,6 +163,10 @@ def start_scraping_all_phrases():
 
 @shared_task
 def scraping_phrase(start_range, end_range):
+    file = open('requests.csv', 'rt')
+    reader = list(csv.reader(file))
+    random.shuffle(reader)
+    file.close()
     requests = reader[start_range:end_range]
     scraper = utils.ScraperPhrases
     scraper.initializate_subject_base()
