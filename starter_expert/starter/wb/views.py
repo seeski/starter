@@ -46,9 +46,6 @@ class IndexerView(ListView):
         return context
 
 
-
-
-
 class SeoPhrasesView(ListView):
     template_name = 'wb/seo_collector.html'
     paginate_by = 100
@@ -121,8 +118,6 @@ class SeoPhraseAddProduct(ListView):
 
         if add_nmid:
             tasks.set_product_standard.delay(add_nmid, int(phrase))
-
-
 
         return render(request, self.template_name, self.get_context_data())
 

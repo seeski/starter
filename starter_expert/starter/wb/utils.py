@@ -735,7 +735,7 @@ class DataOperator:
 
 
     def check_top_category(self, category_id, subject_base):
-            return subject_base.get('category_id')
+        return subject_base.get(category_id)
 
 
     def load_and_normalize_request(self, request_data: dict):
@@ -946,7 +946,7 @@ class SeoCollector:
 
 
 #################### SCRAPER PHRASES #####################
-async def get_most_categories(self, phrase):
+async def get_most_categories(phrase):
     category = ''
     count = 0
     categories_url = 'https://search.wb.ru/exactmatch/ru/common/v4/search?TestGroup=test_2&TestID=131&' \
@@ -954,19 +954,19 @@ async def get_most_categories(self, phrase):
                     ',33,68,70,69,30,86,40,1,66,110,22,31,48,71,114&resultset=filters&spp=0'.format(phrase)
     async with AsyncClient() as client:
         try:
-            resp = await client.get(query_categories_url, timeout=None)
+            resp = await client.get(categories_url, timeout=None)
             resp = resp.json()
-            categories = resp.get('data').get('filters').get('items')
-            categories.sort(key=lambda category: category.get('count') or 0)
+            categories = resp.get('data').get('filters')[0].get('items')
+            categories.sort(key=lambda category: int(category.get('count')) or 0)
 
             while len(categories) < 3:
-                categories.append(None)
+                categories.append({})
 
-            return list(map(lambda x: x.get['name'], categories))[:3]
+            return list(map(lambda x: x.get('name') or '', categories))[:3]
 
         except Exception as e:
             print(f'error at  get_query_most_categories {phrase} {e}')
-            return [None, None, None]
+            return ['', '', '']
 
 
 class ScraperPhrases:

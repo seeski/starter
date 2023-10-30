@@ -1,4 +1,7 @@
+import random
 import datetime
+import csv
+
 from celery import shared_task
 from . import utils
 from django.contrib.auth.models import User
@@ -141,10 +144,16 @@ class SkipException(Exception):
     pass
 
 
+file = open('requests.csv', 'rt')
+reader = list(csv.reader(file))
+random.shuffle(reader)
+file.close()
+
+
 @shared_task
 def start_scraping_all_phrases():
     """Старт парсинга топовых категорий и глубины запросов"""
-    length = Request.objects.count()
+    length = len(reader)
     # temp - максимальное количество очередей задач
     temp = 20
     for i in range(0, temp):
@@ -156,40 +165,41 @@ def start_scraping_all_phrases():
 
 @shared_task
 def scraping_phrase(start_range, end_range):
-    requests = models.Request.objects.all()[start_range:end_range]
+    requests = reader[start_range:end_range]
     scraper = utils.ScraperPhrases
     scraper.initializate_subject_base()
 
     for request in requests:
-        try:
-            keywords = request.keywords
-            frequency = request.frequency
-            priority_cat, req_depth, top_category, second_top_category, third_top_category = scraper.scraping_phrase(keywords)
-            if priority_cat is None:
-                priority_cat = ''
-
+        for i in range(2):
             try:
-                phrase = models.Phrase.objects.get(phrase=keywords)
-                models.Phrase.objects.filter(phrase=keywords).update(
-                    second_top_category=second_top_category,
-                    third_top_category=third_top_category,
-                    top_category=top_category,
-                    priority_cat=priority_cat, 
-                    req_depth=req_depth,
-                    frequency=frequency
-                )
-            except models.Phrase.DoesNotExist:
-                models.Phrase.objects.create(
-                    second_top_category=second_top_category,
-                    third_top_category=third_top_category,
-                    top_category=top_category,
-                    phrase=keywords,
-                    priority_cat=priority_cat,
-                    req_depth=req_depth,
-                    frequency=frequency,
-                    ready=True
-                )
-        except SkipException:
-            pass
+                keywords = request[0]
+                frequency = request[1]
+                priority_cat, req_depth, top_category, second_top_category, third_top_category = scraper.scraping_phrase(keywords)
+                if priority_cat is None:
+                    priority_cat = ''
 
+                try:
+                    phrase = models.Phrase.objects.get(phrase=keywords)
+                    models.Phrase.objects.filter(phrase=keywords).update(
+                        second_top_category=second_top_category,
+                        third_top_category=third_top_category,
+                        top_category=top_category,
+                        priority_cat=priority_cat, 
+                        req_depth=req_depth,
+                        frequency=frequency
+                    )
+                except models.Phrase.DoesNotExist:
+                    models.Phrase.objects.create(
+                        second_top_category=second_top_category,
+                        third_top_category=third_top_category,
+                        top_category=top_category,
+                        phrase=keywords,
+                        priority_cat=priority_cat,
+                        req_depth=req_depth,
+                        frequency=frequency,
+                        ready=True
+                    )
+                break
+            except Exception:
+                pass
 
