@@ -85,6 +85,9 @@ DATABASES = {
         'USER': 'seeski',
         'PASSWORD': 'Starter_Expert%060723',
         'NAME': 'starterdb',
+        'OPTIONS': {
+            'sslmode': 'disable',
+        }
     }
 }
 
