@@ -12,7 +12,7 @@ services:
 
     command: ["redis-server"]
 
-  db:
+  starterdb:
     image: postgres
     restart: always
     environment:
