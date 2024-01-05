@@ -13,7 +13,7 @@ services:
     command: ["redis-server"]
 
   starterdb:
-    image: postgres
+    image: postgres:15-alpine
     restart: always
     environment:
       POSTGRES_PASSWORD: Starter_Expert%060723
