@@ -18,31 +18,31 @@ app.conf.update(timezone='Europe/Moscow')
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
 app.conf.beat_schedule = {}
-
-app.conf.beat_schedule['update-requests-file'] = {
-        'task': 'wb.tasks.update_requests_task',
-        'schedule': crontab(hour=9, minute=50, day_of_week='tuesday'),
-    }
-
-app.conf.beat_schedule['indexer-daily-report-wb'] = {
-        'task': 'wb.tasks.create_indexer_reports_task',
-        'schedule': crontab(minute=15, hour=18),
-    }
-
-# app.conf.beat_schedule['indexer-daily-report-ozon'] = {
-#         'task': 'ozon.tasks.create_indexer_reports_task',
-#         'schedule': crontab(hour=18, minute=0),
+#
+# app.conf.beat_schedule['update-requests-file'] = {
+#         'task': 'wb.tasks.update_requests_task',
+#         'schedule': crontab(hour=9, minute=50, day_of_week='tuesday'),
 #     }
-
-app.conf.beat_schedule['scraping-phrases'] = {
-        'task': 'wb.tasks.start_scraping_all_phrases',
-        'schedule': crontab(hour=0, minute=0, day_of_month='8'),
-    }
-
-app.conf.beat_schedule['quick-indexation-daily-cleaning-wb'] =  {
-    'task': 'wb.tasks.clean_quick_indexation_task',
-    'schedule': crontab(hour=14, minute=0),
-}
+#
+# app.conf.beat_schedule['indexer-daily-report-wb'] = {
+#         'task': 'wb.tasks.create_indexer_reports_task',
+#         'schedule': crontab(minute=15, hour=18),
+#     }
+#
+# # app.conf.beat_schedule['indexer-daily-report-ozon'] = {
+# #         'task': 'ozon.tasks.create_indexer_reports_task',
+# #         'schedule': crontab(hour=18, minute=0),
+# #     }
+#
+# app.conf.beat_schedule['scraping-phrases'] = {
+#         'task': 'wb.tasks.start_scraping_all_phrases',
+#         'schedule': crontab(hour=0, minute=0, day_of_month='8'),
+#     }
+#
+# app.conf.beat_schedule['quick-indexation-daily-cleaning-wb'] =  {
+#     'task': 'wb.tasks.clean_quick_indexation_task',
+#     'schedule': crontab(hour=14, minute=0),
+# }
 
 # Load task modules from all registered Django apps.
 app.autodiscover_tasks()
