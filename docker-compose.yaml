@@ -13,15 +13,15 @@ services:
     command: ["redis-server"]
 
   starterdb:
-    image: postgres:15-alpine
+    image: postgres:latest
     restart: always
     environment:
       POSTGRES_PASSWORD: Starter_Expert%060723
       POSTGRES_USER: seeski
       POSTGRES_DB: starterdb
-#      POSTGRES_INITDB_ARGS: "-A md5"
+      POSTGRES_INITDB_ARGS: "-A md5"
     ports:
-      - "5432:5432"
+      - "5433:5432"
 
   webapp:
     restart: always
