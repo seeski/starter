@@ -12,16 +12,17 @@ services:
 
     command: ["redis-server"]
 
-  starterdb:
-    image: postgres:latest
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
-      POSTGRES_PASSWORD: Starter_Expert%060723
-      POSTGRES_USER: seeski
-      POSTGRES_DB: starterdb
-      POSTGRES_INITDB_ARGS: "-A md5"
+      MYSQL_ROOT_PASSWORD: starterPasswordRoot
+      MYSQL_DATABASE: starterdb
+      MYSQL_USER: starterUser
+      MYSQL_PASSWORD: starterPassword
     ports:
-      - "5433:5432"
+      - "3307:3306"
 
   webapp:
     restart: always
@@ -32,10 +33,10 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - starterdb
+      - db
       - redis
 
-    command: 'sh -c "cd src && python manage.py collectstatic --no-input && gunicorn starter.wsgi:application --bind 0.0.0.0:8000"'
+    command: 'sh -c "cd src && python manage.py migrate && python manage.py collectstatic --no-input && gunicorn starter.wsgi:application --bind 0.0.0.0:8000"'
 
   nginx:
     build:
@@ -55,7 +56,7 @@ services:
       context: starter_expert
     volumes:
       - .:/src
-    command: ["celery", "--workdir=./src", "-A", "starter", "worker", "-l", "info"]
+    command: "celery --workdir=./src -A starter worker -l info"
 
   celery-beat:
     restart: always
@@ -64,7 +65,7 @@ services:
 
     volumes:
       - .:/src
-    command: ["celery", "--workdir=./src", "-A", "starter", "beat", "-l", "info"]
+    command: "celery --workdir=./src -A starter beat -l info"
 
 
 
