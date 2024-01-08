@@ -153,6 +153,8 @@ CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1',
     'https://192.168.0.2',
     'http://192.168.0.2',
+    'https://31.173.193.4',
+    'http://31.173.193.4',
 ]
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 20480
