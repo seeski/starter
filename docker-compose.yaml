@@ -1,16 +1,6 @@
 version: "3.11"
 
 services:
-  redis:
-    image: redis
-    restart: always
-    ports:
-      - '6379:6379'
-
-    volumes:
-      - .:/src
-
-    command: ["redis-server"]
 
   db:
     image: mysql
@@ -23,6 +13,18 @@ services:
       MYSQL_PASSWORD: starterPassword
     ports:
       - "3307:3306"
+      -
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - '6379:6379'
+
+    volumes:
+      - .:/src
+
+    command: ["redis-server"]
+
 
   webapp:
     restart: always
@@ -58,6 +60,9 @@ services:
       - .:/src
     command: "celery --workdir=./src -A starter worker -l info"
 
+    depends_on:
+      -db
+
   celery-beat:
     restart: always
     build:
@@ -66,6 +71,9 @@ services:
     volumes:
       - .:/src
     command: "celery --workdir=./src -A starter beat -l info"
+
+    depends_on:
+      -db
 
 
 
