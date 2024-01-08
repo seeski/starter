@@ -58,10 +58,10 @@ services:
       context: starter_expert
     volumes:
       - .:/src
-    command: "celery --workdir=./src -A starter worker -l info"
 
     depends_on:
-      -db
+      - db
+    command: "celery --workdir=./src -A starter worker -l info"
 
   celery-beat:
     restart: always
@@ -70,10 +70,12 @@ services:
 
     volumes:
       - .:/src
-    command: "celery --workdir=./src -A starter beat -l info"
 
     depends_on:
-      -db
+      - db
+      -
+    command: "celery --workdir=./src -A starter beat -l info"
+
 
 
 
