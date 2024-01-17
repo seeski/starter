@@ -45,7 +45,6 @@ def create_quick_indexation_report(report_id, nmid):
             req_depth=query.get('req_depth'),
             existence=query.get('existence'),
             place=query.get('place'),
-            prom=query.get('prom'),
             spot_req_depth=query.get('spot_req_depth'),
             ad_place=query.get('ad_place'),
             report=report,
