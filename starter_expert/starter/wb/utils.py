@@ -626,6 +626,7 @@ class DataCollector:
         # декодируем текст в человеческий
         async with AsyncClient() as client:
             resp = await client.get('https://seller-weekly-report.wildberries.ru/ns/trending-searches/suppliers-portal-analytics/file?period=month', timeout=None)
+            print(resp.status_code)
             resp = resp.json()
             enc_data = resp['data']['file']
             data = base64.b64decode(enc_data).decode('utf-8')
