@@ -8,6 +8,11 @@ from httpx import AsyncClient
 from asgiref.sync import async_to_sync
 
 
+HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Cookie': '_wbauid=6692713411689684383; ___wbu=49933369-b549-4f32-9316-ccaf78e81a72.1689684385; x-supplier-id-external=9b712861-ed95-4f81-bb88-e514331d222d; external-locale=ru; WILDAUTHNEW_V3=69D82C4BE60C6BB09F698603E880C7DA98CB164320A207A829D21E44B208C895A50A2869632C887CDD21070D11D238D12AC642F972D8D0DC5B89A9219AE75A3573BE8D9DA766DE4BBF605CAD4A6BBC156116F385639A4ED918D878E5EACB98A5F1C577CF37196C69FB23EEBB550CF4ECD49403DDC47E317DF91EA6F53B15509B2A27EF68E13DF89801DDA985108C99819B328D560183351F4D758BCAE6502B036B077BA8175AE5079DFD859CB76B99F1B216F741E66233F56FF74A1C78545564E72E5FF1E7161D432E97B4C2BAB0D6EEEF9E5B03AD6D64BB31163AD5F609E873A514F402F0EB65EC55C3679AB1725F07A0EFFBAE50FAA4FBBDFE543F77428BE55F80A610AEE5A0C7C778CF35D72C655DCE6EE082D9517B4A4A9728993ED7EB1723B0BACA1BD1CB9904184146BD83FD783BFD1B47; wbx-validation-key=4e088847-45df-4e53-ad99-5a32e1e2be8f; WBToken=AuW6zg-GwOjZDIaU_NoMVANOjekByV1tg7ihuiH_ViTZGe7NCXnaVxwXSmq7z-FXgSzYXlkCkLtZssLgmAhst0h_stHR8A7fYXpyydyhU2O9Gh7gZBis8RCHvSyMDz17fCUkBA; cfidsw-wb=qOi6jZF4yjaYLSbkxfmu5iZDF5dnrPJ5oK+zyjSJYpGC372+1LwtOz/GNqQV4YPl/zJ56S1otGb74OTyErANeLQzo/Zk+WDwxZgS2E/tMa5K0C+mo6nnYvvKGw3Nmko3zfmBG+wQNHKbOcZHp33jdxpjShSwMDvtk4mKGg==; __zzatw-wb=MDA0dBA=Fz2+aQ=='
+}
+
 def check_int(el):
     try:
         num = int(el)
@@ -625,7 +630,7 @@ class DataCollector:
         # получаем ответ от вб с закодированными данными по миллиону топ запросов
         # декодируем текст в человеческий
         async with AsyncClient() as client:
-            resp = await client.get('https://seller-weekly-report.wildberries.ru/ns/trending-searches/suppliers-portal-analytics/file?period=month', timeout=None)
+            resp = await client.get('https://seller-weekly-report.wildberries.ru/ns/trending-searches/suppliers-portal-analytics/file?period=month', timeout=None, headers=HEADERS)
             print(resp.status_code)
             resp = resp.json()
             enc_data = resp['data']['file']
