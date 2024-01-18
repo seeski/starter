@@ -1,3 +1,4 @@
+import asyncio
 import time, re, xlsxwriter, io, os, json, base64, random
 from pymorphy3 import MorphAnalyzer
 from openpyxl import load_workbook
@@ -386,7 +387,8 @@ class DataCollector:
     # выдергивает описание товара из пришедшей линки
     # линку предварительно сгенерировал юрл оператор в вызове методе create_card_url
     async def get_card_info(self, card_url):
-        async with AsyncClient() as client:
+        proxies = self.proxy_operator.get_random_proxy()
+        async with AsyncClient(proxies=proxies) as client:
             resp = await client.get(card_url, timeout=None, headers=HEADERS)
             resp = resp.json()
             info = ''
@@ -410,8 +412,9 @@ class DataCollector:
 
     # сбор id бренда
     async def get_brand_id(self, detail_url):
+        proxies = self.proxy_operator.get_random_proxy()
 
-        async with AsyncClient() as client:
+        async with AsyncClient(proxies=proxies) as client:
             try:
                 resp = await client.get(detail_url, timeout=None, headers=HEADERS)
                 resp = resp.json()
@@ -431,6 +434,7 @@ class DataCollector:
                     return resp.get('data').get('total')
                 except Exception as e:
                     new_try_counter = try_counter + 1
+                    await asyncio.sleep(2)
                     await self.get_req_depth(query_depth_url, new_try_counter)
         else:
             print(f'error at get_req_depth {query_depth_url} {e}')
@@ -440,8 +444,9 @@ class DataCollector:
     # возможно тоже будет переделано или нахуй удалено
     # nmid товара при определенном запросе нужны для проверки наличия по запросу
     async def get_query_by_brand(self, query_by_brand_url):
+        proxies = self.proxy_operator.get_random_proxy()
 
-        async with AsyncClient() as client:
+        async with AsyncClient(proxies=proxies) as client:
             counter = 1
             ids = set()
             query_by_brand_url.replace('replace_me', str(counter))
@@ -470,8 +475,9 @@ class DataCollector:
         counter = 1
         ids = []
         query_url = query_url.replace('replace_me', str(counter))
+        proxies = self.proxy_operator.get_random_proxy()
 
-        async with AsyncClient() as client:
+        async with AsyncClient(proxies=proxies) as client:
             while counter <= 10:
                 try:
                     query_url = query_url.replace(f'page={counter-1}', f'page={counter}')
@@ -495,7 +501,9 @@ class DataCollector:
     # возвращает все рекламные nmid товаров
     async def get_ad(self, ad_url):
         ad_ids = []
-        async with AsyncClient() as client:
+        proxies = self.proxy_operator.get_random_proxy()
+
+        async with AsyncClient(proxies=proxies) as client:
             try:
                 resp = await client.get(ad_url, timeout=None, headers=HEADERS)
                 resp = resp.json()
@@ -512,8 +520,9 @@ class DataCollector:
 
     # возвращает топ категорию из апи ответа по рекламе
     async def get_top_category(self, ad_info_url: str):
+        proxies = self.proxy_operator.get_random_proxy()
 
-        async with AsyncClient() as client:
+        async with AsyncClient(proxies=proxies) as client:
             try:
                 resp = await client.get(ad_info_url, timeout=None, headers=HEADERS)
                 resp = resp.json()
@@ -529,8 +538,11 @@ class DataCollector:
 
     # возвращает все категории, которые есть на вб
     async def get_subject_base(self, subject_base_url: str):
+
         categories = {}
-        async with AsyncClient() as client:
+        proxies = self.proxy_operator.get_random_proxy()
+
+        async with AsyncClient(proxies=proxies) as client:
             try:
                  resp = await client.get(subject_base_url, timeout=None, headers=HEADERS)
                  resp = resp.json()
@@ -553,7 +565,9 @@ class DataCollector:
     async def get_most_category(self, query_categories_url):
         category = ''
         count = 0
-        async with AsyncClient() as client:
+        proxies = self.proxy_operator.get_random_proxy()
+
+        async with AsyncClient(proxies=proxies) as client:
             try:
                 resp = await client.get(query_categories_url, timeout=None, headers=HEADERS)
                 resp = resp.json()
@@ -574,7 +588,9 @@ class DataCollector:
     # возвращает бренд и имя товара
     # для более подробного описания текстовой части карточки
     async def get_brand_and_name(self, detail_url):
-        async with AsyncClient() as client:
+        proxies = self.proxy_operator.get_random_proxy()
+
+        async with AsyncClient(proxies=proxies) as client:
             try:
                 resp = await client.get(detail_url, timeout=None, headers=HEADERS)
                 resp = resp.json()
@@ -600,8 +616,9 @@ class DataCollector:
 
         supplies_api_url = f'https://suppliers-api.wildberries.ru/api/v3/supplies?limit=1000&next={next}'
         headers = {'Authorization': f'Bearer {token}'}
+        proxies = self.proxy_operator.get_random_proxy()
 
-        async with AsyncClient() as client:
+        async with AsyncClient(proxies=proxies) as client:
             resp = await client.get(supplies_api_url, timeout=None, headers=HEADERS)
             resp = resp.json()
             supplies_from_resp = resp.get('supplies')
@@ -652,10 +669,11 @@ class DataCollector:
             return await self.get_supplies(token, cabinet, next)
 
     async def getRequestsData(self):
+        proxies = self.proxy_operator.get_random_proxy()
 
         # получаем ответ от вб с закодированными данными по миллиону топ запросов
         # декодируем текст в человеческий
-        async with AsyncClient() as client:
+        async with AsyncClient(proxies=proxies) as client:
             resp = await client.get('https://seller-weekly-report.wildberries.ru/ns/trending-searches/suppliers-portal-analytics/file?period=month', timeout=None, headers=HEADERS)
             print(resp.status_code)
             resp = resp.json()
@@ -694,8 +712,9 @@ class DataCollector:
     async def get_first_ten_product(self, query_url, phrase):
         nmids = []
         query_url = query_url.replace('replace_me', '1')
+        proxies = self.proxy_operator.get_random_proxy()
 
-        async with AsyncClient() as client:
+        async with AsyncClient(proxies=proxies) as client:
             try:
                 resp = await client.get(query_url, timeout=None, headers=HEADERS)
                 resp = resp.json()
@@ -718,7 +737,9 @@ class DataCollector:
 
     async def get_promotion(self, detail_url):
         try:
-            async with AsyncClient() as client:
+            proxies = self.proxy_operator.get_random_proxy()
+
+            async with AsyncClient(proxies=proxies) as client:
                 resp = await client.get(detail_url, timeout=None, headers=HEADERS)
                 resp = resp.json()
                 prom = resp.get('data').get('products')[0].get('promoTextCat')
@@ -984,7 +1005,7 @@ async def get_most_categories(phrase):
     categories_url = 'https://search.wb.ru/exactmatch/ru/common/v4/search?TestGroup=test_2&TestID=131&' \
                     'appType=1&curr=rub&dest=123586150&filters=xsubject&query={}&regions=80,38,4,64,83' \
                     ',33,68,70,69,30,86,40,1,66,110,22,31,48,71,114&resultset=filters&spp=0'.format(phrase)
-    async with AsyncClient() as client:
+    async with AsyncClient(proxies=proxies) as client:
         try:
             resp = await client.get(categories_url, timeout=None, headers=HEADERS)
             resp = resp.json()
