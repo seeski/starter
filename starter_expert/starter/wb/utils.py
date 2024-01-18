@@ -412,8 +412,8 @@ class DataCollector:
             proxy = random.choice(PROXIES)
 
             aclientProxies = {
-                'http': proxy,
-                'https': proxy,
+                'http://': proxy,
+                'https://': proxy,
             }
             async with AsyncClient(proxies=aclientProxies) as client:
                 try:
