@@ -380,6 +380,7 @@ class URLOperator:
 # получает и парсит данные от апи, а также обрабатывает возможные ошибки
 class DataCollector:
 
+    proxy_operator = ProxyOperator()
 
 
     # выдергивает описание товара из пришедшей линки
@@ -422,7 +423,7 @@ class DataCollector:
     # получение глубины запроса
     async def get_req_depth(self, query_depth_url, try_counter=0):
         if try_counter <= 5:
-            proxies = ProxyOperator.get_random_proxy()
+            proxies = self.proxy_operator.get_random_proxy()
             async with AsyncClient(proxies=proxies) as client:
                 try:
                     resp = await client.get(query_depth_url, timeout=None, headers=HEADERS)
