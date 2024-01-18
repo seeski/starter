@@ -399,15 +399,19 @@ class DataCollector:
 
 
     # получение глубины запроса
-    async def get_req_depth(self, query_depth_url):
-        async with AsyncClient() as client:
-            try:
-                resp = await client.get(query_depth_url, timeout=None, headers=HEADERS)
-                resp = resp.json()
-                return resp.get('data').get('total')
-            except Exception as e:
-                print(f'error at get_req_depth {query_depth_url} {e}')
-                return 0
+    async def get_req_depth(self, query_depth_url, try_counter=0):
+        if try_counter <= 5:
+            async with AsyncClient() as client:
+                try:
+                    resp = await client.get(query_depth_url, timeout=None, headers=HEADERS)
+                    resp = resp.json()
+                    return resp.get('data').get('total')
+                except Exception as e:
+                    new_try_counter = try_counter + 1
+                    await self.get_req_depth(query_depth_url, new_try_counter)
+        else:
+            print(f'error at get_req_depth {query_depth_url} {e}')
+            return 0
 
     # получение id товаров по определенному брэнду
     # возможно тоже будет переделано или нахуй удалено
