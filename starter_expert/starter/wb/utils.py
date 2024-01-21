@@ -435,7 +435,8 @@ class DataCollector:
                 except Exception as e:
                     new_try_counter = try_counter + 1
                     await asyncio.sleep(2)
-                    await self.get_req_depth(query_depth_url, new_try_counter)
+                    result = await self.get_req_depth(query_depth_url, new_try_counter)
+                    return result
         else:
             print(f'error at get_req_depth {query_depth_url} {e}')
             return 0
