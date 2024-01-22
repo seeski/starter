@@ -434,15 +434,15 @@ class DataCollector:
                     return resp.get('data').get('total')
                 except Exception as e:
                     new_try_counter = try_counter + 1
-                    await asyncio.sleep(2)
+                    await asyncio.sleep(15)
                     result = await self.get_req_depth(query_depth_url, new_try_counter)
                     return result
         else:
-            print(f'error at get_req_depth {query_depth_url} {e}')
+            print(f'error at get_req_depth {query_depth_url}')
             return 0
 
     # получение id товаров по определенному брэнду
-    # возможно тоже будет переделано или нахуй удалено
+    # возможно тоже будет переделано или удалено
     # nmid товара при определенном запросе нужны для проверки наличия по запросу
     async def get_query_by_brand(self, query_by_brand_url):
         proxies = self.proxy_operator.get_random_proxy()
