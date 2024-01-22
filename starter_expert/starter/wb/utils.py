@@ -1,5 +1,5 @@
 import asyncio
-import time, re, xlsxwriter, io, os, json, base64, random
+import time, re, xlsxwriter, io, os, json, base64, random, fake_useragent
 from pymorphy3 import MorphAnalyzer
 from openpyxl import load_workbook
 from . import models
@@ -382,6 +382,7 @@ class URLOperator:
 class DataCollector:
 
     proxy_operator = ProxyOperator()
+    user_agent = fake_useragent.UserAgent().random
 
 
     # выдергивает описание товара из пришедшей линки
@@ -429,7 +430,7 @@ class DataCollector:
             proxies = self.proxy_operator.get_random_proxy()
             async with AsyncClient(proxies=proxies) as client:
                 try:
-                    resp = await client.get(query_depth_url, timeout=None, headers=HEADERS)
+                    resp = await client.get(query_depth_url, timeout=None, headers={'user-agent': self.user_agent})
                     resp = resp.json()
                     return resp.get('data').get('total')
                 except Exception as e:
