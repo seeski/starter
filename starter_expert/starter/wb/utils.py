@@ -468,7 +468,8 @@ class DataCollector:
 
                 except Exception:
                     await asyncio.sleep(15)
-                    return self.get_query_by_brand(query_by_brand_url, try_counter+1)
+                    res = await self.get_query_by_brand(query_by_brand_url, try_counter+1)
+                    return res
 
         else:
             return set()
