@@ -467,6 +467,7 @@ class DataCollector:
                             ids.add(str(product.get('id', '')))
 
                 except Exception:
+                    asyncio.sleep(15)
                     return self.get_query_by_brand(query_by_brand_url, try_counter+1)
 
         else:
