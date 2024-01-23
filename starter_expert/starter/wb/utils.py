@@ -445,14 +445,15 @@ class DataCollector:
     # получение id товаров по определенному брэнду
     # возможно тоже будет переделано или удалено
     # nmid товара при определенном запросе нужны для проверки наличия по запросу
-    async def get_query_by_brand(self, query_by_brand_url):
-        proxies = self.proxy_operator.get_random_proxy()
+    async def get_query_by_brand(self, query_by_brand_url, try_counter=0):
+        if try_counter <= 5:
 
-        async with AsyncClient(proxies=proxies) as client:
-            counter = 1
-            ids = set()
-            query_by_brand_url.replace('replace_me', str(counter))
-            while True:
+            proxies = self.proxy_operator.get_random_proxy()
+
+            async with AsyncClient(proxies=proxies) as client:
+                counter = 1
+                ids = set()
+                query_by_brand_url.replace('replace_me', str(counter))
                 query_by_brand_url = query_by_brand_url.replace(f'page={counter - 1}', f'page={counter}')
                 try:
                     resp = await client.get(query_by_brand_url, timeout=None, headers=HEADERS)
@@ -465,11 +466,11 @@ class DataCollector:
                         for product in products:
                             ids.add(str(product.get('id', '')))
 
-                        counter += 1
+                except Exception:
+                    return self.get_query_by_brand(query_by_brand_url, try_counter+1)
 
-                except Exception as e:
-                    print(f'error at get_query_by_brand {query_by_brand_url} -- {type(e).__name__} :: {e}')
-                    return ids
+        else:
+            return set()
 
 
     # возвращает все nmid товаров с первых 10 (если есть) страниц
